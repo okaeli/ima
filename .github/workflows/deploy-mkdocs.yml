@@ -51,4 +51,5 @@ jobs:
           publish_dir: ./site
 
       - name: Publish URL message
-        run: echo "Published site URL: $PAGES_URL"
+        run: |
+          echo "Published site URL: $PAGES_URL"
