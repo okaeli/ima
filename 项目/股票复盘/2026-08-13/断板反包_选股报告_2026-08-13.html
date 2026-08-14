@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>断板反包选股报告 · 2026-08-13</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  :root{
+    --red:#D64541; --red-deep:#B03A2E; --red-bg:#FDEDED;
+    --green:#1E8449; --green-bg:#EAFAF1;
+    --amber:#B9770E; --amber-bg:#FEF9E7;
+    --blue:#1F618D; --blue-bg:#EAF2F8;
+    --ink:#1C2833; --ink-2:#5D6D7E; --line:#E5E8EA;
+    --bg:#F8F9F9; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;padding:0 0 60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:28px 0 22px;margin-bottom:24px}
+  .kicker{font-size:12px;color:var(--ink-2);letter-spacing:2px;margin-bottom:6px}
+  h1{font-size:24px;font-weight:700;letter-spacing:1px}
+  h1 em{font-style:normal;color:var(--red)}
+  .slogan{margin-top:8px;font-size:13px;color:var(--ink-2)}
+  .slogan b{color:var(--red-deep)}
+  h2{font-size:18px;font-weight:700;margin:34px 0 6px;padding-left:12px;border-left:4px solid var(--red)}
+  .sub{font-size:13px;color:var(--ink-2);margin-bottom:16px;padding-left:12px}
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0 8px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .kpi .lab{font-size:12px;color:var(--ink-2)}
+  .kpi .val{font-size:20px;font-weight:700;margin-top:2px}
+  .kpi .val small{font-size:12px;font-weight:400}
+  .down{color:var(--green)} .up{color:var(--red-deep)}
+  /* verdict chips */
+  .verdicts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:18px 0 30px}
+  .vc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;border-left:4px solid var(--line)}
+  .vc.a{border-left-color:var(--red);background:var(--red-bg)}
+  .vc.b{border-left-color:var(--amber);background:var(--amber-bg)}
+  .vc.c{border-left-color:var(--green);background:var(--green-bg)}
+  .vc h3{font-size:14px;font-weight:700;margin-bottom:6px}
+  .vc .nm{font-size:16px;font-weight:700}
+  .vc .nm small{font-size:12px;font-weight:400;color:var(--ink-2)}
+  .vc p{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+  .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;margin:0 4px 4px 0;border:1px solid var(--line)}
+  /* charts */
+  .chart-box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+  .chart{width:100%;height:300px}
+  /* table */
+  table.data{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:12.5px;margin:12px 0 8px}
+  table.data th{background:var(--bg);font-size:11.5px;color:var(--ink-2);padding:8px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+  table.data td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.data tr:last-child td{border-bottom:none}
+  table.data .up{color:var(--red-deep);font-weight:700}
+  table.data .dn{color:var(--green);font-weight:700}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px}
+  .badge.a{background:var(--red-bg);color:var(--red-deep)}
+  .badge.b{background:var(--amber-bg);color:var(--amber)}
+  .badge.c{background:var(--green-bg);color:var(--green)}
+  /* veto */
+  .veto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:12px;padding:16px 20px;margin:12px 0}
+  .veto h4{font-size:14px;font-weight:700;color:var(--red-deep);margin-bottom:8px}
+  .veto ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 18px}
+  .veto li{font-size:12.5px;color:var(--ink-2);padding-left:20px;position:relative}
+  .veto li:before{content:"✕";position:absolute;left:0;color:var(--red);font-size:11px;top:1px}
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-2)}
+  .note{font-size:12px;color:var(--ink-2);background:var(--blue-bg);border:1px solid var(--blue);border-radius:10px;padding:10px 14px;margin:10px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">A股短线 · 断板反包（量化反包法 2.0）· 六条件评分</div>
+    <h1>断板反包选股报告 <em>· 2026-08-13（周四）收盘</em></h1>
+    <div class="slogan">断板日是<b>洗</b>、反包日是<b>拉</b>。只盯六件事：<b>洗而不破 · 主力不撤 · 放量换手 · 对倒承接 · 超大单回流 · 封板质量</b></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 市场概览 KPI -->
+  <div class="kpis">
+    <div class="kpi"><div class="lab">上证指数</div><div class="val down">3926.96 <small>-0.50%</small></div></div>
+    <div class="kpi"><div class="lab">深证成指</div><div class="val down">14289.44 <small>-0.87%</small></div></div>
+    <div class="kpi"><div class="lab">创业板指</div><div class="val down">3586.04 <small>-0.45%</small></div></div>
+    <div class="kpi"><div class="lab">两市成交</div><div class="val">2.55万亿 <small>放量3985亿</small></div></div>
+    <div class="kpi"><div class="lab">涨停 / 连板</div><div class="val up">62 <small>/ 22只</small></div></div>
+    <div class="kpi"><div class="lab">涨跌家数</div><div class="val down">超4300只 <small>下跌</small></div></div>
+  </div>
+
+  <!-- 核心结论 -->
+  <div class="verdicts">
+    <div class="vc a">
+      <h3>🟥 A级 · 首选低吸候选</h3>
+      <div class="nm">长城科技 <small>sh603897</small></div>
+      <p>2板断板，断板日"洗而不破"（收34.68 &gt; 涨停价32.05），主力当日<b>+9842万</b>大幅流入、散户-9842万割肉（标准对倒承接），超大单+8284万，5日累计+1.02亿。唯一瑕疵：断板日仍涨8.21%，偏离MA5 +16.5%，次日回踩 MA5≈29.77 才是低吸区。</p>
+    </div>
+    <div class="vc b">
+      <h3>🟧 B级 · 观察</h3>
+      <div class="nm">巨轮智能 <small>sz002031</small> · 宝鹰股份 <small>sz002047</small></div>
+      <p>巨轮：断板日主力-1.74亿流出、但5日累计<b>+5.58亿</b>巨额在场，"出而后返"潜力，偏离MA5 +7.8%最贴线，需次日主力回流确认。宝鹰：断板形态满分但资金偏弱（5日累计-1148万）+爆量6.2x。</p>
+    </div>
+    <div class="vc c">
+      <h3>🟩 C级 · 避雷</h3>
+      <div class="nm">华东数控 <small>sz002248</small> · 香江控股 <small>sh600162</small> · 鸿博股份 <small>sz002229</small></div>
+      <p>香江、鸿博触<b>一票否决</b>（断板日主力净流出 &gt; 5日累计净流入50%，真出货）；华东换手32.8%超30%+跟风高位分歧断板。</p>
+    </div>
+  </div>
+
+  <div class="note">⚠️ <b>情绪面提示</b>：今日两市冲高回落、放量至 2.55 万亿，超 4300 只个股下跌，短线情绪明显降温。百花医药 7 板断板（触及严重异动）、传智教育/高争民爆跌停，高位股亏钱效应显现。断板反包属弱势/分歧行情玩法，本日恰好是典型环境，但<b>控仓 + 次日集合竞价手动确认</b>仍不可省。</div>
+
+  <!-- 图表1：偏离MA5 -->
+  <h2>一 · 偏离 MA5 距离（贴近首选区越近越好）</h2>
+  <div class="sub">连板后断板日收盘普遍悬于 MA5 上方（+6%~+17%），严格"贴 MA5"几乎无合格者；故"贴均线"落实为<b>反包日回踩 MA5 的低吸买点</b>。色阶：≤7% 红（贴近）· 7~12% 橙 · &gt;12% 灰。</div>
+  <div class="chart-box"><div id="chartDev" class="chart"></div></div>
+
+  <!-- 图表2：资金流 -->
+  <h2>二 · 主力资金验证（最硬的证据）</h2>
+  <div class="sub">断板日主力净流入为正（或流出额 &lt; 前5日累计的50%）= 主力不撤；主力流出 + 散户流入 = 出货结构，直接放弃。</div>
+  <div class="chart-box"><div id="chartFlow" class="chart"></div></div>
+
+  <!-- 明细表 -->
+  <h2>三 · 断板候选明细（六条件）</h2>
+  <div class="sub">数据来源：腾讯自选股 westock 日K/资金流，2026-08-13 收盘。涨跌/量比/换手为断板日口径。</div>
+  <table class="data">
+    <tr>
+      <th>代码 · 名称</th><th>断板前</th><th>收盘</th><th>MA5</th><th>偏离MA5</th><th>MA10</th>
+      <th>断板涨跌</th><th>量比</th><th>换手</th><th>主力当日</th><th>5日累计</th><th>题材/龙头</th><th>评级</th>
+    </tr>
+    <tr>
+      <td><b>长城科技</b><br><span style="color:var(--ink-2)">sh603897</span></td>
+      <td>2板</td><td>34.68</td><td>29.77</td><td class="up">+16.48%</td><td>27.74</td>
+      <td class="up">+8.21%</td><td>1.20x温和</td><td>19.97%</td>
+      <td class="up">+9842万</td><td class="up">+1.02亿</td>
+      <td>电磁线/机器人链·新能源车（主线补涨）</td><td><span class="badge a">A首选</span></td>
+    </tr>
+    <tr>
+      <td><b>巨轮智能</b><br><span style="color:var(--ink-2)">sz002031</span></td>
+      <td>2板</td><td>6.27</td><td>5.82</td><td class="up">+7.81%</td><td>5.51</td>
+      <td class="dn">-2.34%</td><td>2.14x放量</td><td>23.75%</td>
+      <td class="dn">-1.74亿</td><td class="up">+5.58亿</td>
+      <td>人形机器人/RV减速器（资金龙头）</td><td><span class="badge b">B观察</span></td>
+    </tr>
+    <tr>
+      <td><b>宝鹰股份</b><br><span style="color:var(--ink-2)">sz002047</span></td>
+      <td>2板</td><td>4.20</td><td>3.62</td><td class="up">+16.02%</td><td>3.43</td>
+      <td class="up">+7.14%</td><td>6.20x爆量</td><td>15.67%</td>
+      <td class="up">+762万</td><td class="dn">-1148万</td>
+      <td>摘帽+光耦+股权转让（非主线）</td><td><span class="badge b">B观察</span></td>
+    </tr>
+    <tr>
+      <td><b>华东数控</b><br><span style="color:var(--ink-2)">sz002248</span></td>
+      <td>3板</td><td>11.74</td><td>10.83</td><td class="up">+8.38%</td><td>9.87</td>
+      <td class="dn">-3.53%</td><td>1.41x</td><td>32.79%</td>
+      <td class="dn">-6528万</td><td class="up">+1.41亿</td>
+      <td>工业母机/机器人（跟风中位股）</td><td><span class="badge c">C避雷</span></td>
+    </tr>
+    <tr>
+      <td><b>香江控股</b><br><span style="color:var(--ink-2)">sh600162</span></td>
+      <td>2板</td><td>4.57</td><td>4.24</td><td class="up">+7.78%</td><td>3.76</td>
+      <td class="dn">-3.18%</td><td>2.31x</td><td>12.05%</td>
+      <td class="dn">-2.82亿</td><td class="up">+1.24亿</td>
+      <td>地产转IDC算力（跨界·无订单风险）</td><td><span class="badge c">C否决</span></td>
+    </tr>
+    <tr>
+      <td><b>鸿博股份</b><br><span style="color:var(--ink-2)">sz002229</span></td>
+      <td>2板</td><td>13.65</td><td>11.91</td><td class="up">+14.61%</td><td>11.34</td>
+      <td class="up">+5.73%</td><td>8.56x爆量</td><td>44.92%</td>
+      <td class="dn">-2.80亿</td><td class="up">+3.81亿</td>
+      <td>算力租赁（跟风·业绩变脸索赔风险）</td><td><span class="badge c">C否决</span></td>
+    </tr>
+  </table>
+
+  <!-- 操作框架 -->
+  <h2>四 · 反包日操作框架（8/14 周五）</h2>
+  <div class="sub">反包日 = 下一交易日（2026-08-14）。标准动作：开在/回踩 MA5 附近低吸；低开破 MA5 仅小量试、警惕下探 MA10；长时间站不上 MA5 则放弃。</div>
+  <table class="data">
+    <tr><th>标的</th><th>评级</th><th>MA5 低吸参考</th><th>MA10 止损参考</th><th>触发条件（集合竞价/盘口）</th></tr>
+    <tr><td><b>长城科技</b> sh603897</td><td><span class="badge a">A首选</span></td><td>≈29.77</td><td>≈27.74</td><td>竞价红柱抢筹；回踩 MA5 企稳放量；破 MA5 不接、防下探 MA10</td></tr>
+    <tr><td><b>巨轮智能</b> sz002031</td><td><span class="badge b">B观察</span></td><td>≈5.82</td><td>≈5.51</td><td>重点看反包日主力是否回流（超大单转正）；破 5.51 放弃</td></tr>
+    <tr><td><b>宝鹰股份</b> sz002047</td><td><span class="badge b">B观察</span></td><td>≈3.62</td><td>≈3.43</td><td>需放量收复 + 主力转正；爆量+远离均线，仅轻仓试错</td></tr>
+  </table>
+
+  <!-- 避雷核对 -->
+  <h2>五 · 一票否决核对</h2>
+  <div class="veto">
+    <h4>命中以下任意一条即出局（今日 2 只命中）</h4>
+    <ul>
+      <li>断板日主力净流出 &gt; 前5日累计净流入的 50% → <b>香江控股（-2.82亿 &gt; 0.62亿）、鸿博股份（-2.80亿 &gt; 1.91亿）</b>命中，真出货</li>
+      <li>断板日换手 &gt; 30% 疑似出货 → 华东数控 32.79%、鸿博股份 44.92%</li>
+      <li>断板日跌停或跌幅 &gt; 5% → 今日无命中</li>
+      <li>ST / 退市 / 立案 / 业绩暴雷 → 鸿博（业绩变脸索赔、债务逾期）需警惕</li>
+      <li>后排杂毛 / 板块有明确前排时不碰跟风 → 华东数控（跟风中位股）、鸿博（城地香江3板为龙头）</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    <p><b>方法论要点：</b>反包能否成立，与断板形态（分歧/诱多/破位）无关，只取决于<b>资金是否自洽</b>——断板日洗盘换手、主力不撤、散户割肉，反包日超大单回流并全额承接散户抛盘。今日 6 只断板股中，仅长城科技呈现"断板日主力直接大额流入 + 散户割肉"的教科书对倒；巨轮智能呈"断板日流出但 5 日累计巨额在场"的"出而后返"待确认形态。</p>
+    <p style="margin-top:8px"><b>数据来源与免责声明：</b>本报告基于腾讯自选股 westock 行情/资金流数据（2026-08-13 收盘）与公开资讯（连板梯队、题材梳理）整理，仅供研究学习，<b>不构成任何投资建议</b>。断板反包属高波动、高回撤短线玩法，过往案例不预示未来收益；集合竞价逐笔数据无法由 AI 获取，<b>最终买点须你在交易终端自行确认</b>。请独立判断、严格控制仓位，必要时咨询持牌专业机构。</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var stocks = ['香江控股','巨轮智能','华东数控','鸿博股份','宝鹰股份','长城科技'];
+  var dev = [7.78, 7.81, 8.38, 14.61, 16.02, 16.48];
+  function devColor(v){ if(v <= 7) return '#D64541'; if(v <= 12) return '#B9770E'; return '#AAB7C4'; }
+
+  // 图表1：偏离MA5
+  var c1 = echarts.init(document.getElementById('chartDev'));
+  c1.setOption({
+    grid:{left:70,right:30,top:30,bottom:40},
+    tooltip:{trigger:'axis',formatter:function(p){var d=p[0];return d.name+'：偏离MA5 <b>+'+d.value+'%</b>';}},
+    xAxis:{type:'category',data:stocks,axisLabel:{fontSize:11}},
+    yAxis:{type:'value',name:'%',axisLabel:{formatter:'{value}'}},
+    series:[{type:'bar',data:dev.map(function(v){return {value:v,itemStyle:{color:devColor(v)}};}),barMaxWidth:42,
+      label:{show:true,position:'top',formatter:'+{c}%',fontSize:11,color:'#5D6D7E'}}]
+  });
+
+  // 图表2：资金流（当日 vs 5日累计，单位：亿）
+  var names = ['长城科技','巨轮智能','宝鹰股份','华东数控','香江控股','鸿博股份'];
+  var today = [0.98, -1.74, 0.08, -0.65, -2.82, -2.80];
+  var cum5  = [1.02, 5.58, -0.11, 1.41, 1.24, 3.81];
+  var c2 = echarts.init(document.getElementById('chartFlow'));
+  c2.setOption({
+    grid:{left:70,right:30,top:40,bottom:40},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var r=p[0].name+'<br/>';p.forEach(function(d){r+=d.marker+d.seriesName+'：<b>'+(d.value>0?'+':'')+d.value.toFixed(2)+'亿</b><br/>';});return r;}},
+    legend:{data:['断板日主力净流入','5日累计主力净流入'],top:0,textStyle:{fontSize:11}},
+    xAxis:{type:'category',data:names,axisLabel:{fontSize:11}},
+    yAxis:{type:'value',name:'亿元',axisLabel:{formatter:'{value}'}},
+    series:[
+      {name:'断板日主力净流入',type:'bar',data:today.map(function(v){return {value:v,itemStyle:{color:v>=0?'#D64541':'#1E8449'}};}),barMaxWidth:30,
+        label:{show:true,position:'top',formatter:function(p){return p.value.toFixed(2);},fontSize:10,color:'#5D6D7E'}},
+      {name:'5日累计主力净流入',type:'bar',data:cum5.map(function(v){return {value:v,itemStyle:{color:v>=0?'#E59866':'#58D68D'}};}),barMaxWidth:30,
+        label:{show:true,position:'top',formatter:function(p){return p.value.toFixed(2);},fontSize:10,color:'#5D6D7E'}}
+    ]
+  });
+
+  window.addEventListener('resize',function(){c1.resize();c2.resize();});
+})();
+</script>
+</body>
+</html>

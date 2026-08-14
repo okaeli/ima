@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>断板反包选股 · 2026-08-12收盘</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+:root{
+  --red:#D64541; --red-deep:#B03A2E; --red-bg:#FDEDED;
+  --green:#1E8449; --green-bg:#EAFAF1;
+  --amber:#B9770E; --amber-bg:#FEF9E7;
+  --blue:#1F618D; --blue-bg:#EAF2F8;
+  --ink:#1C2833; --ink-2:#5D6D7E; --line:#E5E8EA;
+  --bg:#F8F9F9; --card:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;padding:0 0 60px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:28px 0 20px;margin-bottom:24px}
+.kicker{font-size:12px;color:var(--ink-2);letter-spacing:2px;margin-bottom:4px}
+h1{font-size:24px;font-weight:700}
+h1 em{font-style:normal;color:var(--red)}
+.meta{font-size:13px;color:var(--ink-2);margin-top:6px}
+
+/* TL;DR */
+.tldr{display:grid;grid-template-columns:2fr 1.5fr;gap:16px;margin-bottom:24px}
+.tldr .main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px}
+.tldr .main h2{font-size:17px;font-weight:700;margin-bottom:10px}
+.tldr .main .big-num{font-size:40px;font-weight:700;color:var(--red-deep);line-height:1.1}
+.tldr .main .big-num.warn{color:var(--amber)}
+.tldr .main .sub-num{font-size:13px;color:var(--ink-2)}
+.tldr .side{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 24px}
+.tldr .side h3{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--red-deep)}
+.tldr .side .hot{font-size:13px;color:var(--ink-2);line-height:1.7}
+.tldr .side .hot b{color:var(--ink)}
+.tldr .side .rej{font-size:12px;color:var(--ink-2);margin-top:6px;padding:4px 10px;background:var(--red-bg);border-radius:6px;display:inline-block}
+
+/* Section titles */
+.sec-title{font-size:18px;font-weight:700;margin:32px 0 10px;padding-left:12px;border-left:4px solid var(--red)}
+.sec-sub{font-size:13px;color:var(--ink-2);margin-bottom:18px;padding-left:12px}
+
+/* ECharts container */
+#chart{width:100%;height:340px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:24px}
+
+/* Table */
+table.data{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px;margin-bottom:30px}
+table.data th{background:var(--bg);font-size:12px;color:var(--ink-2);padding:10px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+table.data td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.data tr:last-child td{border-bottom:none}
+table.data .up{color:var(--red-deep);font-weight:700}
+table.data .down{color:var(--green)}
+table.data .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:8px;margin-right:2px}
+.tag-red{background:var(--red-bg);color:var(--red-deep)}
+.tag-amber{background:var(--amber-bg);color:var(--amber)}
+.tag-green{background:var(--green-bg);color:var(--green)}
+.tag-blue{background:var(--blue-bg);color:var(--blue)}
+
+/* Score cards */
+.score-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:24px}
+.score-card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.score-card .head{padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.score-card .head .name{font-size:15px;font-weight:700}
+.score-card .head .code{font-size:12px;color:var(--ink-2)}
+.score-card .head .pts{font-size:28px;font-weight:700}
+.score-card .body{padding:0 18px 14px}
+.score-cat{margin-bottom:10px}
+.score-cat .cat-name{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.score-cat .cat-name .bar{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.score-cat .cat-name .bar i{display:block;height:100%;border-radius:2px}
+.score-item{display:flex;justify-content:space-between;font-size:12px;padding:2px 0}
+.score-item .si-name{color:var(--ink-2);flex:1}
+.score-item .si-pts{font-weight:700;flex:0 0 30px;text-align:right}
+.score-item.pass .si-name{color:var(--green)}
+.score-item.fail .si-name{color:var(--red-deep)}
+.score-item.warn .si-name{color:var(--amber)}
+.score-item.na .si-name{color:var(--ink-2);font-style:italic}
+.score-card .veto-list{font-size:11px;color:var(--red-deep);background:var(--red-bg);padding:6px 12px;margin:8px 0;border-radius:6px}
+
+/* Operation framework */
+.ops{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:24px}
+.op-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+.op-card h4{font-size:14px;font-weight:700;margin-bottom:8px}
+.op-card table{width:100%;font-size:12.5px;border-collapse:collapse}
+.op-card td{padding:4px 0;border-bottom:1px dashed var(--line);vertical-align:top}
+.op-card td:first-child{white-space:nowrap;font-weight:600;color:var(--blue);width:70px}
+.op-card tr:last-child td{border-bottom:none}
+
+/* Veto section */
+.veto-box{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:12px;padding:16px 20px;margin-bottom:24px}
+.veto-box h4{font-size:14px;font-weight:700;color:var(--red-deep);margin-bottom:8px}
+.veto-box ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 18px}
+.veto-box li{font-size:13px;color:var(--ink-2);padding-left:18px;position:relative}
+.veto-box li:before{content:"✕";position:absolute;left:0;color:var(--red);font-size:11px;top:1px}
+.veto-box li.hit{color:var(--red-deep);font-weight:600}
+.veto-box li.hit:before{content:"⚠"}
+
+/* Footer */
+.foot{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-2)}
+.foot b{color:var(--ink)}
+
+/* Conclusion banner */
+.conclusion{background:var(--red-bg);border:1px solid var(--red);border-radius:12px;padding:16px 20px;margin-bottom:24px}
+.conclusion.none{background:var(--amber-bg);border-color:var(--amber)}
+.conclusion h3{font-size:15px;font-weight:700;color:var(--red-deep);margin-bottom:6px}
+.conclusion.none h3{color:var(--amber)}
+.conclusion p{font-size:13px;color:var(--ink-2)}
+.conclusion p b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header>
+<div class="wrap">
+  <div class="kicker">断板反包选股 · 六条件评分体系</div>
+  <h1>2026-08-12 收盘选股 <em>· 断板日筛选</em></h1>
+  <div class="meta">
+    数据时点：2026-08-12 15:00收盘 | 数据来源：腾讯自选股 westock MCP + agentic_search 连板梯队<br>
+    大盘：沪指 3946.68 (+0.32%) · 深成指 14414.43 (+1.09%) · 创业板 3602.08 (+1.49%) · 全市场 4100+上涨 · 缩量1686亿 · 96涨停 0跌停
+  </div>
+</div>
+</header>
+
+<div class="wrap">
+
+<!-- TL;DR -->
+<div class="tldr">
+  <div class="main">
+    <h2>今日断板选股结论</h2>
+    <div class="big-num warn">0 只符合买入标准</div>
+    <div class="sub-num">5只候选股全部评分&lt;55，无Tier A/B/C标的</div>
+    <div style="margin-top:10px;font-size:13px;color:var(--ink-2)">
+      核心原因：<b>今日断板股主力资金集体流出</b>，无一满足"主力不撤"的资金证据要求。<br>
+      仅亚邦股份(603188)主力微幅净流入+1259万，但题材逻辑薄弱+爆量4x，总分仅51。
+    </div>
+  </div>
+  <div class="side">
+    <h3>今日市场主线</h3>
+    <div class="hot">
+      <b>CPO/光通信</b> · Lumentum财报超预期<br>
+      <b>半导体/存储</b> · 美股半导体走强<br>
+      <b>医药</b> · 百花医药7连板<br>
+      <b>光伏/储能</b> · 政策催化反弹
+    </div>
+    <div style="margin-top:10px">
+      <span class="rej">✕ 联泰环保 已过滤(跌幅-3.96%&lt;-3%)</span>
+    </div>
+  </div>
+</div>
+
+<!-- 为什么今天全军覆没 -->
+<div class="conclusion none">
+  <h3>断板日复盘：为什么今天全军覆没？</h3>
+  <p>
+    对比8月11日断板→8月12日反包的成功案例（海鸥/誉衡/瑞康），<b>今天的断板股缺少最关键的"主力不撤"信号</b>：
+    五只候选股中四只断板日主力净流出（哈药-1.79亿、国风-1.39亿、第一医药-3872万、立新-7361万），
+    仅亚邦+1259万微量流入。这与昨日三只反包成功股的"断板日主力流入"形成鲜明对比。
+    <br><br>
+    断板日的<b>核心矛盾</b>：今天医药板块虽有百花7连板带队，但资金流向显示高位主力在撤而非洗——哈药虽然收涨6.53%且缩量，但超大单净流出1.12亿，散户净流入1.06亿，
+    是典型的"散户接盘、主力出货"结构，绝非洗盘。
+    <br><br>
+    <b>操作建议：今日无符合断板反包模式的标的，耐心等待下一批连板→断板机会。</b>
+    明天(8/13)观察今日3连板晋级失败的股票（如秦安股份能否继续），以及2连板中断后的反包信号。
+  </p>
+</div>
+
+<!-- Chart -->
+<div class="sec-title">偏离MA5% 分布</div>
+<div class="sec-sub">偏离越小越接近"贴均线低吸"买点区；柱色：≤7%红(接近) / 7~12%橙 / &gt;12%灰</div>
+<div id="chart"></div>
+
+<!-- Detail Table -->
+<div class="sec-title">候选明细表</div>
+<div class="sec-sub">按六条件评分排序 | 数据来源：westock data_kline (15日,前复权) + data_fund_flow</div>
+<table class="data">
+<thead>
+<tr>
+  <th>代码·名称</th>
+  <th>连板</th>
+  <th>收盘</th>
+  <th>vs涨停价</th>
+  <th>涨跌</th>
+  <th>振幅</th>
+  <th>换手</th>
+  <th>量比</th>
+  <th>MA5</th>
+  <th>偏离MA5</th>
+  <th>MA10</th>
+  <th>主力(万)</th>
+  <th>散户(万)</th>
+  <th>超大单(万)</th>
+  <th>评分</th>
+  <th>题材</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background:var(--amber-bg)">
+  <td><b>亚邦股份</b><br><span style="font-size:11px;color:var(--ink-2)">603188</span></td>
+  <td>2板</td>
+  <td>4.91</td>
+  <td class="up">4.91 &gt; 4.88 ✓</td>
+  <td class="up">+0.61%</td>
+  <td>10.45%</td>
+  <td>15.48%</td>
+  <td class="down" style="color:var(--green)">4.00x 爆量!</td>
+  <td>4.47</td>
+  <td style="color:var(--amber);font-weight:700">+9.9%</td>
+  <td>4.21</td>
+  <td class="up">+1,259</td>
+  <td class="up" style="color:var(--red-deep)">-4,149</td>
+  <td class="up">+1,236</td>
+  <td style="font-weight:700;color:var(--amber)">51</td>
+  <td><span class="tag tag-blue">基础化工</span><span class="tag tag-amber">非龙头</span></td>
+</tr>
+<tr style="background:var(--red-bg)">
+  <td><b>哈药股份</b><br><span style="font-size:11px;color:var(--ink-2)">600664</span></td>
+  <td>3板</td>
+  <td>8.81</td>
+  <td class="up">8.81 &gt; 8.27 ✓</td>
+  <td class="up">+6.53%</td>
+  <td>8.34%</td>
+  <td>23.75%</td>
+  <td>0.88x 缩量</td>
+  <td>7.53</td>
+  <td style="color:var(--ink-2)">+17.0%</td>
+  <td>6.83</td>
+  <td class="down" style="color:var(--green)">-17,928</td>
+  <td class="down" style="color:var(--green)">+10,649</td>
+  <td class="down" style="color:var(--green)">-11,176</td>
+  <td style="font-weight:700;color:var(--red-deep)">49</td>
+  <td><span class="tag tag-red">创新药</span><span class="tag tag-green">人气标杆</span></td>
+</tr>
+<tr style="background:var(--red-bg)">
+  <td><b>第一医药</b><br><span style="font-size:11px;color:var(--ink-2)">600833</span></td>
+  <td>2板</td>
+  <td>12.49</td>
+  <td class="up">12.49 &gt; 12.11 ✓</td>
+  <td class="up">+3.14%</td>
+  <td>9.17%</td>
+  <td>21.82%</td>
+  <td>1.28x 温和</td>
+  <td>11.13</td>
+  <td style="color:var(--ink-2)">+12.3%</td>
+  <td>10.44</td>
+  <td class="down" style="color:var(--green)">-3,872</td>
+  <td class="down" style="color:var(--green)">+2,060</td>
+  <td class="down" style="color:var(--green)">-3,423</td>
+  <td style="font-weight:700;color:var(--red-deep)">49</td>
+  <td><span class="tag tag-blue">医药商业</span><span class="tag tag-amber">跟随者</span></td>
+</tr>
+<tr style="background:var(--red-bg)">
+  <td><b>国风新材</b><br><span style="font-size:11px;color:var(--ink-2)">000859</span></td>
+  <td>2板</td>
+  <td>10.20</td>
+  <td class="down" style="color:var(--green)">10.20 &lt; 10.48 ✗</td>
+  <td class="down" style="color:var(--green)">-2.67%</td>
+  <td>5.15%</td>
+  <td>17.26%</td>
+  <td>1.23x 温和</td>
+  <td>9.56</td>
+  <td style="color:var(--red-deep);font-weight:700">+6.7%</td>
+  <td>8.97</td>
+  <td class="down" style="color:var(--green)">-13,918</td>
+  <td class="down" style="color:var(--green)">+10,548</td>
+  <td class="down" style="color:var(--green)">-12,540</td>
+  <td style="font-weight:700;color:var(--red-deep)">39</td>
+  <td><span class="tag tag-red">光刻/新材料</span><span class="tag tag-green">支线龙头</span></td>
+</tr>
+<tr style="background:var(--red-bg)">
+  <td><b>立新能源</b><br><span style="font-size:11px;color:var(--ink-2)">001258</span></td>
+  <td>2板</td>
+  <td>15.46</td>
+  <td class="down" style="color:var(--green)">15.46 &lt; 15.93 ✗</td>
+  <td class="down" style="color:var(--green)">-2.95%</td>
+  <td>14.00%</td>
+  <td>22.64%</td>
+  <td>0.87x 缩量</td>
+  <td>14.24</td>
+  <td style="color:var(--red-deep);font-weight:700">+8.5%</td>
+  <td>13.56</td>
+  <td class="down" style="color:var(--green)">-7,361</td>
+  <td class="down" style="color:var(--green)">+17,945</td>
+  <td class="down" style="color:var(--green)">-6,917</td>
+  <td style="font-weight:700;color:var(--red-deep)">31</td>
+  <td><span class="tag tag-green">绿电/光伏</span><span class="tag tag-green">支线核心</span></td>
+</tr>
+</tbody>
+</table>
+
+<!-- Score Cards -->
+<div class="sec-title">逐只评分拆解</div>
+<div class="sec-sub">满分100分：A断板形态(25)+B资金证据(30)+C题材逻辑(20)+D技术面(15)+E反包确认(10)</div>
+<div class="score-cards">
+
+<!-- 亚邦股份 -->
+<div class="score-card" style="border-color:var(--amber)">
+  <div class="head" style="background:var(--amber-bg)">
+    <div><div class="name">亚邦股份 <span style="font-size:12px;color:var(--ink-2)">603188</span></div></div>
+    <div class="pts" style="color:var(--amber)">51</div>
+  </div>
+  <div class="body">
+  <div class="score-cat"><div class="cat-name">A·断板形态 <span style="color:var(--blue)">20/25</span><span class="bar"><i style="width:80%;background:var(--blue)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘4.91≥涨停价4.88 (洗而不破)</span><span class="si-pts" style="color:var(--green)">10</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 振幅10.45%≥5% (剧烈洗盘)</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 换手15.48%在8-30%</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 盘中未触板</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">B·资金证据 <span style="color:var(--red)">15/30</span><span class="bar"><i style="width:50%;background:var(--red)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 主力净流入+1259万 (唯一正流入!)</span><span class="si-pts" style="color:var(--green)">10</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 散户净流出-4149万 (割肉)</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item na"><span class="si-name">- 融资盘/龙虎榜/反包日数据暂缺</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">C·题材逻辑 <span style="color:var(--amber)">0/20</span><span class="bar"><i style="width:0%;background:var(--amber)"></i></span></div>
+    <div class="score-item fail"><span class="si-name">✗ 基础化工非当日主线</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 非板块龙头, 无辨识度</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 无业绩背书</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">D·技术面 <span style="color:var(--green)">5/15</span><span class="bar"><i style="width:33%;background:var(--green)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘>MA5(4.47)</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 量比4.00x 爆量出货嫌疑!</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item warn"><span class="si-name">⚠ 偏离MA5 9.9% 偏高</span><span class="si-pts" style="color:var(--amber)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">E·反包确认 <span style="color:var(--ink-2)">0/10</span><span class="bar"><i style="width:0%;background:var(--line)"></i></span></div>
+    <div class="score-item na"><span class="si-name">待明日(8/13)盘中确认</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="veto-list">⚠ 量比4.00x爆量>3x阈值，形态风险极高</div>
+  </div>
+</div>
+
+<!-- 哈药股份 -->
+<div class="score-card">
+  <div class="head" style="background:var(--red-bg)">
+    <div><div class="name">哈药股份 <span style="font-size:12px;color:var(--ink-2)">600664</span></div></div>
+    <div class="pts" style="color:var(--red-deep)">49</div>
+  </div>
+  <div class="body">
+  <div class="score-cat"><div class="cat-name">A·断板形态 <span style="color:var(--blue)">20/25</span><span class="bar"><i style="width:80%;background:var(--blue)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘8.81≥涨停价8.27 (洗而不破)</span><span class="si-pts" style="color:var(--green)">10</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 振幅8.34%≥5%</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 换手23.75%在8-30%</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 盘中最高8.96 未触涨停9.10</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">B·资金证据 <span style="color:var(--red)">0/30</span><span class="bar"><i style="width:0%;background:var(--red)"></i></span></div>
+    <div class="score-item fail"><span class="si-name">✗ 主力净流出-1.79亿 大幅出逃!</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 散户净流入+1.06亿 接盘非割肉!</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item na"><span class="si-name">- 融资盘/龙虎榜/反包日数据暂缺</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">C·题材逻辑 <span style="color:var(--amber)">20/20</span><span class="bar"><i style="width:100%;background:var(--amber)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 创新药为当日主线之一</span><span class="si-pts" style="color:var(--green)">8</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 百花医药7连板带队</span><span class="si-pts" style="color:var(--green)">6</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 品牌药企,有业绩背书</span><span class="si-pts" style="color:var(--green)">6</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">D·技术面 <span style="color:var(--green)">10/15</span><span class="bar"><i style="width:67%;background:var(--green)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘>MA5(7.53) 均线多头</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 量比0.88x 缩量</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item warn"><span class="si-name">⚠ 偏离MA5 17.0% 偏高</span><span class="si-pts" style="color:var(--amber)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">E·反包确认 <span style="color:var(--ink-2)">0/10</span><span class="bar"><i style="width:0%;background:var(--line)"></i></span></div>
+    <div class="score-item na"><span class="si-name">待明日(8/13)盘中确认</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="veto-list">⚠ 主力-1.79亿+散户+1.06亿=典型出货结构,非洗盘</div>
+  </div>
+</div>
+
+<!-- 第一医药 -->
+<div class="score-card">
+  <div class="head" style="background:var(--red-bg)">
+    <div><div class="name">第一医药 <span style="font-size:12px;color:var(--ink-2)">600833</span></div></div>
+    <div class="pts" style="color:var(--red-deep)">49</div>
+  </div>
+  <div class="body">
+  <div class="score-cat"><div class="cat-name">A·断板形态 <span style="color:var(--blue)">25/25</span><span class="bar"><i style="width:100%;background:var(--blue)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘12.49≥涨停价12.11</span><span class="si-pts" style="color:var(--green)">10</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 振幅9.17%≥5%</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 换手21.82%在8-30%</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 盘中最高12.87接近涨停13.32</span><span class="si-pts" style="color:var(--green)">5</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">B·资金证据 <span style="color:var(--red)">0/30</span><span class="bar"><i style="width:0%;background:var(--red)"></i></span></div>
+    <div class="score-item fail"><span class="si-name">✗ 主力净流出-3872万</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 散户净流入+2060万 未割肉</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item na"><span class="si-name">- 融资盘/龙虎榜/反包日数据暂缺</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">C·题材逻辑 <span style="color:var(--amber)">14/20</span><span class="bar"><i style="width:70%;background:var(--amber)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 医药为当日主线</span><span class="si-pts" style="color:var(--green)">8</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 百花医药7连板带队</span><span class="si-pts" style="color:var(--green)">6</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 无明确业绩背书</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">D·技术面 <span style="color:var(--green)">10/15</span><span class="bar"><i style="width:67%;background:var(--green)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘>MA5(11.13)</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 量比1.28x 温和</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item warn"><span class="si-name">⚠ 偏离MA5 12.3%</span><span class="si-pts" style="color:var(--amber)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">E·反包确认 <span style="color:var(--ink-2)">0/10</span></div>
+    <div class="score-item na"><span class="si-name">待明日确认</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="veto-list">⚠ 主力净流出超5日累计流入50%</div>
+  </div>
+</div>
+
+<!-- 国风新材 -->
+<div class="score-card">
+  <div class="head" style="background:var(--red-bg)">
+    <div><div class="name">国风新材 <span style="font-size:12px;color:var(--ink-2)">000859</span></div></div>
+    <div class="pts" style="color:var(--red-deep)">39</div>
+  </div>
+  <div class="body">
+  <div class="score-cat"><div class="cat-name">A·断板形态 <span style="color:var(--blue)">10/25</span><span class="bar"><i style="width:40%;background:var(--blue)"></i></span></div>
+    <div class="score-item fail"><span class="si-name">✗ 收盘10.20<涨停价10.48 破位!</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 振幅5.15%≥5%</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 换手17.26%合格</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 盘中未触板</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">B·资金证据 <span style="color:var(--red)">0/30</span><span class="bar"><i style="width:0%;background:var(--red)"></i></span></div>
+    <div class="score-item fail"><span class="si-name">✗ 主力净流出-1.39亿 大幅出逃!</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 散户净流入+1.05亿 接盘</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item na"><span class="si-name">- 其余数据暂缺</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">C·题材逻辑 <span style="color:var(--amber)">14/20</span><span class="bar"><i style="width:70%;background:var(--amber)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 光刻/半导体为当日主线</span><span class="si-pts" style="color:var(--green)">8</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 光刻支线龙头</span><span class="si-pts" style="color:var(--green)">6</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 新材料概念无业绩背书</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">D·技术面 <span style="color:var(--green)">15/15</span><span class="bar"><i style="width:100%;background:var(--green)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘>MA5(9.56)</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 偏离MA5仅6.7% 最贴近!</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 量比1.23x 温和</span><span class="si-pts" style="color:var(--green)">5</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">E·反包确认 <span style="color:var(--ink-2)">0/10</span></div>
+    <div class="score-item na"><span class="si-name">待明日确认</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="veto-list">⚠ 收盘破涨停价+主力净流出超5日累计流入50%</div>
+  </div>
+</div>
+
+<!-- 立新能源 -->
+<div class="score-card">
+  <div class="head" style="background:var(--red-bg)">
+    <div><div class="name">立新能源 <span style="font-size:12px;color:var(--ink-2)">001258</span></div></div>
+    <div class="pts" style="color:var(--red-deep)">31</div>
+  </div>
+  <div class="body">
+  <div class="score-cat"><div class="cat-name">A·断板形态 <span style="color:var(--blue)">10/25</span><span class="bar"><i style="width:40%;background:var(--blue)"></i></span></div>
+    <div class="score-item fail"><span class="si-name">✗ 收盘15.46<涨停价15.93 破位!</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 振幅14.00%≥5%</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 换手22.64%合格</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 盘中未触板</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">B·资金证据 <span style="color:var(--red)">0/30</span><span class="bar"><i style="width:0%;background:var(--red)"></i></span></div>
+    <div class="score-item fail"><span class="si-name">✗ 主力净流出-7361万</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 散户净流入+1.79亿 大幅接盘!</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+    <div class="score-item na"><span class="si-name">- 其余数据暂缺</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">C·题材逻辑 <span style="color:var(--amber)">14/20</span><span class="bar"><i style="width:70%;background:var(--amber)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 光伏/储能今日反弹</span><span class="si-pts" style="color:var(--green)">8</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 绿色电力支线核心</span><span class="si-pts" style="color:var(--green)">6</span></div>
+    <div class="score-item fail"><span class="si-name">✗ 电力板块今日领跌</span><span class="si-pts" style="color:var(--red-deep)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">D·技术面 <span style="color:var(--green)">10/15</span><span class="bar"><i style="width:67%;background:var(--green)"></i></span></div>
+    <div class="score-item pass"><span class="si-name">✓ 收盘>MA5(14.24)</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item pass"><span class="si-name">✓ 量比0.87x 缩量</span><span class="si-pts" style="color:var(--green)">5</span></div>
+    <div class="score-item warn"><span class="si-name">⚠ 振幅14%过大,长下影风险</span><span class="si-pts" style="color:var(--amber)">0</span></div>
+  </div>
+  <div class="score-cat"><div class="cat-name">E·反包确认 <span style="color:var(--ink-2)">0/10</span></div>
+    <div class="score-item na"><span class="si-name">待明日确认</span><span class="si-pts">0</span></div>
+  </div>
+  <div class="veto-list">⚠ 收盘破涨停价+振幅14%+散户大幅接盘</div>
+  </div>
+</div>
+
+</div>
+
+<!-- Operation Framework -->
+<div class="sec-title">操作框架（仅供参考）</div>
+<div class="sec-sub">即使无Tier A/B标的，仍记录每只的MA5/MA10作为反包日低吸参考</div>
+<div class="ops">
+  <div class="op-card" style="border-left:3px solid var(--amber)">
+    <h4>亚邦股份 603188 · 观察</h4>
+    <table>
+      <tr><td>反包参考</td><td>MA5 4.47 / MA10 4.21 附近</td></tr>
+      <tr><td>触发条件</td><td>明日(8/13)开盘不破4.58(今日最低),放量拉升且主力回流>2000万</td></tr>
+      <tr><td>放弃条件</td><td>低开>2%不拉回;量能萎缩至1/3以下</td></tr>
+      <tr><td>风险</td><td>量比4x爆量=对手盘极重;非主线无辨识度</td></tr>
+    </table>
+  </div>
+  <div class="op-card" style="border-left:3px solid var(--red)">
+    <h4>哈药股份 600664 · 放弃</h4>
+    <table>
+      <tr><td>反包参考</td><td>MA5 7.53 / MA10 6.83</td></tr>
+      <tr><td>放弃理由</td><td>主力-1.79亿+散户+1.06亿=出货结构;虽题材好、形态好,但资金证据致命</td></tr>
+      <tr><td>例外</td><td>仅当明日龙虎榜显示机构净买+超大单回流>2亿时重新评估</td></tr>
+    </table>
+  </div>
+  <div class="op-card" style="border-left:3px solid var(--red)">
+    <h4>国风新材 000859 · 放弃</h4>
+    <table>
+      <tr><td>反包参考</td><td>MA5 9.56 / MA10 8.97</td></tr>
+      <tr><td>放弃理由</td><td>收盘破涨停价(10.20<10.48)+主力-1.39亿</td></tr>
+      <tr><td>例外</td><td>仅当半导体板块明日爆发+个股超大单回流确认</td></tr>
+    </table>
+  </div>
+  <div class="op-card" style="border-left:3px solid var(--red)">
+    <h4>第一医药 600833 · 放弃</h4>
+    <table>
+      <tr><td>反包参考</td><td>MA5 11.13 / MA10 10.44</td></tr>
+      <tr><td>放弃理由</td><td>主力-3872万(超5日流入50%)+板块跟随者</td></tr>
+    </table>
+  </div>
+  <div class="op-card" style="border-left:3px solid var(--red)">
+    <h4>立新能源 001258 · 放弃</h4>
+    <table>
+      <tr><td>反包参考</td><td>MA5 14.24 / MA10 13.56</td></tr>
+      <tr><td>放弃理由</td><td>破涨停价+振幅14%长下影(廉价筹码对手盘)+主力-7361万+散户+1.79亿接盘</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Veto Checks -->
+<div class="sec-title">一票否决核对</div>
+<div class="sec-sub">命中任意一条直接出局</div>
+<div class="veto-box">
+  <h4>逐条核对结果</h4>
+  <ul>
+    <li>断板日收盘跌破首板成本价 — 全部通过(均未跌破)</li>
+    <li class="hit">断板日主力净流出 > 前5日累计净流入的50% — 国风新材、第一医药 命中!</li>
+    <li>ST/退市风险/立案调查/业绩暴雷 — 全部通过</li>
+    <li>上市不足60日 — 全部通过</li>
+    <li>连续3日涨幅偏离累超20%且发异动公告 — 需核实(哈药3连板需关注)</li>
+    <li>断板日跌停或跌幅>5% — 全部通过(联泰环保已被-3%规则过滤)</li>
+  </ul>
+</div>
+
+<!-- Disclaimer -->
+<div class="foot">
+  <p><b>数据来源：</b>连板梯队/断板确认: agentic_search(聚合 westock limitup_days); K线/均线: 腾讯自选股 westock data_kline(15日,前复权); 资金流向: westock data_fund_flow; 市场热点: 财联社/东方财富 8月12日收盘复盘。</p>
+  <p style="margin-top:6px"><b>方法说明：</b>断板反包六条件评分体系——A断板形态(25分)+B资金证据(30分)+C题材逻辑(20分)+D技术面(15分)+E反包确认(10分)。85+核心标的/70+重点关注/55+观察/&lt;55放弃。断板日=8月12日,反包观察日=8月13日。</p>
+  <p style="margin-top:6px"><b>关键发现：</b>今日断板股与昨日(8/11)断板→8/12反包成功案例的核心差异在于资金面——昨日三股(海鸥/誉衡/瑞康)断板日主力均为正流入或微幅流出,而今日五股中有四股主力大幅流出。这说明今天的断板更接近"真出货"而非"洗盘"。</p>
+  <p style="margin-top:8px"><b>免责声明：</b>本报告基于公开数据与量化分析整理，仅供研究学习，不构成任何投资建议。短线交易风险极高，过往案例不预示未来收益。投资决策请结合个人风险承受能力独立判断，必要时咨询持牌专业机构。竞价数据需用户在交易终端手动确认。</p>
+</div>
+
+</div>
+
+<script>
+// ECharts - 偏离MA5% 柱状图
+(function(){
+  var dom = document.getElementById('chart');
+  var chart = echarts.init(dom);
+  var data = [
+    {name:'国风新材', val:6.7, color:'#D64541'},
+    {name:'立新能源', val:8.5, color:'#D64541'},
+    {name:'亚邦股份', val:9.9, color:'#B9770E'},
+    {name:'第一医药', val:12.3, color:'#B9770E'},
+    {name:'哈药股份', val:17.0, color:'#5D6D7E'}
+  ];
+  var option = {
+    tooltip:{trigger:'axis',formatter:function(p){return p[0].name+'<br/>偏离MA5: <b>'+p[0].value+'%</b>';}},
+    grid:{left:100,right:40,top:20,bottom:30},
+    xAxis:{type:'value',name:'偏离MA5(%)',nameLocation:'middle',nameGap:35,
+      axisLine:{lineStyle:{color:'#E5E8EA'}},
+      axisLabel:{color:'#5D6D7E'},
+      splitLine:{lineStyle:{color:'#F0F0F0'}}
+    },
+    yAxis:{type:'category',data:data.map(function(d){return d.name;}),inverse:true,
+      axisLine:{lineStyle:{color:'#E5E8EA'}},
+      axisLabel:{color:'#1C2833',fontWeight:'bold'}
+    },
+    series:[{
+      type:'bar',data:data.map(function(d){return {value:d.val,itemStyle:{color:d.color,borderRadius:[0,4,4,0]}};}),
+      barWidth:22,label:{show:true,position:'right',formatter:'{c}%',color:'#5D6D7E',fontSize:12}
+    }]
+  };
+  chart.setOption(option);
+  window.addEventListener('resize',function(){chart.resize();});
+})();
+</script>
+
+</body>
+</html>

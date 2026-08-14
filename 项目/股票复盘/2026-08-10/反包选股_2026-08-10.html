@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>量化反包法2.0 选股结果 · 2026-08-10</title>
+<style>
+  :root{ --bg:#f7f8fa; --card:#ffffff; --ink:#1f2329; --sub:#6b7280; --line:#e5e7eb;
+         --red:#d92d20; --green:#079455; --amber:#b54708; --blue:#1570ef; --chip:#eef2ff; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,sans-serif;line-height:1.6}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 18px 60px}
+  h1{font-size:22px;margin:0 0 4px}
+  .meta{color:var(--sub);font-size:13px;margin-bottom:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  .lead{font-size:15px}
+  .lead b{color:var(--red)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:center;vertical-align:middle}
+  th{background:#f1f3f7;font-weight:600;color:#374151}
+  td.l{text-align:left}
+  .tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600}
+  .t-a{background:#fee4e2;color:var(--red)} .t-b{background:#fef0c7;color:var(--amber)}
+  .t-c{background:#e0f2fe;color:var(--blue)} .t-d{background:#eef2ff;color:#3538cd}
+  .t-x{background:#f2f4f7;color:#667085}
+  .bar{height:8px;background:#eef0f3;border-radius:6px;overflow:hidden;min-width:60px}
+  .bar>i{display:block;height:100%;border-radius:6px}
+  .note{font-size:12.5px;color:var(--sub);margin-top:8px}
+  h2{font-size:16px;margin:22px 0 6px;padding-left:9px;border-left:3px solid var(--blue)}
+  .kv{font-size:13.5px}
+  .kv li{margin:3px 0}
+  .warn{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 16px;font-size:13.5px}
+  .src{font-size:12px;color:var(--sub);background:#f9fafb;border:1px dashed var(--line);border-radius:8px;padding:10px 14px}
+  .disc{background:#0f172a;color:#e5e7eb;border-radius:10px;padding:14px 18px;font-size:12.5px;margin-top:18px}
+  .pill{font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>量化反包法 2.0 · 选股结果</h1>
+  <div class="meta">应用场景：弱势行情下的「低位题材断板反包」｜数据时点：2026-08-10 收盘｜候选用于 <b>2026-08-11（次日/反包日）</b> 观察买点</div>
+
+  <div class="card lead">
+    <p><b>结论先行：</b>按方法筛选出 7 只「2–3 板断板」候选（2026-08-07 有 2–3 连板、2026-08-10 未再涨停）。
+    严格套用「贴五日均线 + 下影线/对手盘」过滤后，<b>武汉凡谷(002194)、通宇通讯(002792)</b> 两项契合度最高，属明日反包观察首选；
+    <b>锴威特(688693)</b> 因长下影+巨震被方法明确避雷。需重点提示：今日这批断板股集中在<b>高位科技（半导体/PCB/5G）</b>，
+    恰是当日复盘所指「科技退潮」方向，与方法的「低位题材」偏好有偏差，整体属偏高波动玩法。</p>
+  </div>
+
+  <h2>一、方法 → 数据的映射（怎么筛的）</h2>
+  <div class="card kv">
+    <ul>
+      <li><span class="pill">① 首选 2–3 板断板</span>：取 <code>westock-tool ranking limitup_days</code> 的 2026-08-07 连板榜，挑 LimitUpDays=2 或 3 的标的；再剔除 2026-08-10 仍在涨停榜（即未断板）的，得到 7 只。</li>
+      <li><span class="pill">② 优先板块小梯队龙头</span>：用 <code>westock-data profile</code> 确认行业与主营，判断板块内辨识度（5G 内武汉凡谷辨识度 &gt; 通宇通讯）。</li>
+      <li><span class="pill">③ 收盘价贴五日均线</span>：用 <code>westock-data technical --group ma</code> 取 MA5，算「收盘/MA5 偏离」，偏离越小越贴合。</li>
+      <li><span class="pill">④ 次日五日均线附近低吸 + 竞价确认</span>：以 MA5 为买点锚（附 MA10 为防守），并需次日集合竞价红柱抢筹确认。</li>
+      <li><span class="pill">⑤ 避雷（对手盘）</span>：用当日 O/H/L/C 算下影线幅度，长下影 = 廉价筹码多 = 明日对手盘重，直接剔除。</li>
+    </ul>
+  </div>
+
+  <h2>二、候选排名（7 只，按方法契合度排序）</h2>
+  <div class="card">
+    <table>
+      <tr>
+        <th>代码/名称</th><th>断板前连板</th><th>板块(主营)</th>
+        <th>收盘</th><th>MA5</th><th>收盘偏离MA5</th><th>8/10 涨跌</th>
+        <th>下影线</th><th>对手盘</th><th>综合契合度</th><th>评级</th>
+      </tr>
+      <tr>
+        <td class="l"><b>002194 武汉凡谷</b></td><td>2板断板</td><td class="l">通信·5G射频滤波</td>
+        <td>10.00</td><td>9.90</td><td><b>+1.0%</b></td><td>-9.91%</td>
+        <td>极小≈0</td><td>干净</td>
+        <td><div class="bar"><i style="width:88%;background:var(--green)"></i></div></td>
+        <td><span class="tag t-a">★首选</span></td>
+      </tr>
+      <tr>
+        <td class="l"><b>002792 通宇通讯</b></td><td>2板断板</td><td class="l">通信·5G基站天线</td>
+        <td>34.10</td><td>32.92</td><td><b>+3.6%</b></td><td>-8.31%</td>
+        <td>小(15%)</td><td>干净</td>
+        <td><div class="bar"><i style="width:80%;background:var(--green)"></i></div></td>
+        <td><span class="tag t-a">★次选</span></td>
+      </tr>
+      <tr>
+        <td class="l"><b>002971 和远气体</b></td><td>3板断板</td><td class="l">基础化工·电子气体</td>
+        <td>44.38</td><td>40.52</td><td>+9.5%</td><td>-2.20%</td>
+        <td>中(53%)</td><td>中性</td>
+        <td><div class="bar"><i style="width:55%;background:var(--amber)"></i></div></td>
+        <td><span class="tag t-b">○待回踩</span></td>
+      </tr>
+      <tr>
+        <td class="l"><b>603228 景旺电子</b></td><td>2板断板</td><td class="l">电子·PCB</td>
+        <td>96.00</td><td>87.15</td><td>+10.2%</td><td>+1.11%</td>
+        <td>长(55%)</td><td>偏多</td>
+        <td><div class="bar"><i style="width:45%;background:var(--amber)"></i></div></td>
+        <td><span class="tag t-b">△偏弱</span></td>
+      </tr>
+      <tr>
+        <td class="l"><b>600601 方正科技</b></td><td>2板断板</td><td class="l">电子·PCB/覆铜板</td>
+        <td>13.22</td><td>11.66</td><td>+13.4%</td><td>+2.72%</td>
+        <td>极小</td><td>干净但超买</td>
+        <td><div class="bar"><i style="width:50%;background:var(--amber)"></i></div></td>
+        <td><span class="tag t-b">○偏贵</span></td>
+      </tr>
+      <tr>
+        <td class="l"><b>600206 有研新材</b></td><td>3板断板</td><td class="l">电子·半导体材料</td>
+        <td>52.03</td><td>44.00</td><td>+18.3%</td><td>+8.01%</td>
+        <td>无(0)</td><td>干净但过远</td>
+        <td><div class="bar"><i style="width:40%;background:var(--amber)"></i></div></td>
+        <td><span class="tag t-c">△非标准</span></td>
+      </tr>
+      <tr>
+        <td class="l"><b>688693 锴威特</b></td><td>2板断板</td><td class="l">电子·功率半导体</td>
+        <td>85.20</td><td>76.43</td><td>+11.5%</td><td>-8.76%</td>
+        <td>长(34%)+巨震</td><td><b>重</b></td>
+        <td><div class="bar"><i style="width:15%;background:var(--red)"></i></div></td>
+        <td><span class="tag t-x">✗避雷</span></td>
+      </tr>
+    </table>
+    <div class="note">「综合契合度」为按方法 5 步主观打分（非模型输出）；「收盘偏离MA5」= 收盘 ÷ MA5 − 1，越小越贴合买点锚。</div>
+  </div>
+
+  <h2>三、明日（2026-08-11）反包买点条件</h2>
+  <div class="card kv">
+    <ul>
+      <li><b>武汉凡谷 002194</b>：买点锚 MA5≈<b>9.90</b>，防守 MA10≈<b>9.33</b>。次日若开在 9.9 附近可沿 5 日线低吸；若低开至 9.9 下方则小仓试探、以 9.33 为界；若长时间站不上 9.9 且拉不起 → 避险（恐下探 10 日线）。</li>
+      <li><b>通宇通讯 002792</b>：买点锚 MA5≈<b>32.9</b>，MA10≈<b>28.6</b>（缓冲更大）。同样次日 5 日线附近低吸，低开小买；需集合竞价红柱抢筹确认再动手。</li>
+      <li><b>和远气体 002971</b>：当前 44.4 距 MA5(40.5) 仍 +9.5%，<b>未贴均线</b>，仅作「回踩 40.5 附近」的观望项，不急于现价介入。</li>
+    </ul>
+    <p class="note">共同闸门：<b>集合竞价红柱（主动加价、已匹配买量＞卖量）= 资金抢筹确认</b>，无此信号不买；且单票仓位需小、严格止损。</p>
+  </div>
+
+  <div class="warn">
+    <b>⚠ 避雷案例 — 锴威特(688693)</b>：8/10 高开 96 元、最高 96.8、最低 79.3、收 85.2，单日振幅约 18%，下影线长达 5.9 元（占振幅 1/3），且 PE 为负、科创板高波动。
+    这正是方法所言「分时长下影线 = 廉价筹码多 = 明日对手盘重」的典型，次日极易被这些获利/解套盘砸死，<b>直接剔除</b>。
+  </div>
+
+  <h2>四、必须正视的偏差：今日并非「低位题材」</h2>
+  <div class="card kv">
+    <p>方法 2.0 的核心是「<b>弱势行情 + 低位题材</b>断板反包」，视频案例多为医药/消费/重组等低位题材。但 2026-08-10 实际发生的「2–3 板断板」全部落在
+    <b>半导体 / PCB / 5G 等高位科技线</b>——而当日复盘明确指出「科技退潮、CPO 走弱」。这意味着：</p>
+    <ul>
+      <li>这批候选多处于 5 日涨幅 +12%~+57% 的<b>高位</b>，对手盘本就偏重，与方法「低位」前提不符；</li>
+      <li>相对最贴合的是 <b>武汉凡谷 / 通宇通讯（5G）</b>：连板仅 2 板、收盘几乎贴 5 日线、下影线干净，是今日 7 只里最「低位+贴线」的组合；</li>
+      <li>若追求方法原教旨的「低位题材反包」，应等到<b>题材股（医药/消费/重组等）出现 2–3 板断板且贴 5 日线</b>时再出手，而非追今日科技退潮的余波。</li>
+    </ul>
+  </div>
+
+  <h2>五、数据来源与时点</h2>
+  <div class="src">
+    • 连板梯队：<code>westock-tool ranking limitup_days</code>，时点 2026-08-10 收盘（共 103 只涨停）、2026-08-07 收盘（共 75 只）。<br>
+    • 行情与 K 线形态：<code>westock-data quote</code>（价格/开高低收/涨跌幅），时点 2026-08-10 收盘。<br>
+    • 均线：<code>westock-data technical --group ma</code>（MA5/MA10/MA20…），时点 2026-08-10 收盘。<br>
+    • 行业与主营：<code>westock-data profile</code>，时点 2026-08-10。<br>
+    • 选股方法文本：用户视频《量化反包法2.0(1).mp4》逐字稿校正整理（见同目录「量化反包法2.0_选股说明.md」）。
+  </div>
+
+  <div class="disc">
+    免责声明：以上内容基于公开数据和量化分析，仅供参考，不构成投资建议。市场有风险，投资需谨慎。任何投资决策应结合个人风险承受能力、资金状况和投资目标独立判断，必要时咨询持牌专业机构。过往表现不预示未来收益。
+  </div>
+</div>
+</body>
+</html>

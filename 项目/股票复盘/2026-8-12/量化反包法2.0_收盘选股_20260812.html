@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>量化反包法2.0 选股报告 - 2026年8月12日收盘</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+  .header { background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #1a3a4a 100%); color: #fff; padding: 30px; border-radius: 12px; margin-bottom: 20px; }
+  .header h1 { font-size: 22px; margin-bottom: 6px; }
+  .header .sub { font-size: 13px; color: #8899aa; }
+  .header .meta { display: flex; gap: 16px; margin-top: 10px; font-size: 12px; flex-wrap: wrap; }
+  .header .meta span { background: rgba(255,255,255,0.08); padding: 3px 10px; border-radius: 4px; }
+  .section { background: #fff; border-radius: 10px; padding: 22px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .section h2 { font-size: 17px; border-left: 4px solid #e63946; padding-left: 10px; margin-bottom: 14px; }
+  .section h3 { font-size: 14px; color: #444; margin: 14px 0 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
+  th { background: #f8f9fa; padding: 9px 7px; text-align: center; font-weight: 600; color: #555; border-bottom: 2px solid #dee2e6; white-space: nowrap; }
+  td { padding: 8px 7px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+  tr:hover { background: #f8f9fa; }
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+  .tag-red { background: #fce4e4; color: #c0392b; }
+  .tag-green { background: #d4edda; color: #155724; }
+  .tag-orange { background: #fff3cd; color: #856404; }
+  .tag-blue { background: #d1ecf1; color: #0c5460; }
+  .tag-gray { background: #e9ecef; color: #6c757d; }
+  .card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin-bottom: 10px; }
+  .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .card-name { font-size: 16px; font-weight: 700; }
+  .card-code { font-size: 12px; color: #999; margin-left: 5px; }
+  .card-metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin: 8px 0; }
+  .metric { text-align: center; padding: 7px 3px; background: #f8f9fa; border-radius: 6px; }
+  .metric-label { font-size: 10px; color: #999; }
+  .metric-value { font-size: 15px; font-weight: 700; margin-top: 2px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+  .item-good { background: #e8f5e9; color: #2e7d32; padding: 7px 10px; border-radius: 5px; font-size: 12px; }
+  .item-bad { background: #fbe9e7; color: #c62828; padding: 7px 10px; border-radius: 5px; font-size: 12px; }
+  .item-warn { background: #fff8e1; color: #f57f17; padding: 7px 10px; border-radius: 5px; font-size: 12px; }
+  .item-neutral { background: #f5f5f5; color: #555; padding: 7px 10px; border-radius: 5px; font-size: 12px; }
+  .highlight-box { background: #e8f5e9; border: 1px solid #4caf50; border-radius: 8px; padding: 14px; margin: 10px 0; }
+  .highlight-box h4 { color: #2e7d32; margin-bottom: 6px; }
+  .highlight-box ul { font-size: 13px; padding-left: 18px; }
+  .highlight-box li { margin-bottom: 3px; }
+  .danger-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 14px; margin: 10px 0; }
+  .danger-box h4 { color: #856404; margin-bottom: 6px; }
+  .flow { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+  .flow-step { flex:1; min-width:110px; background:#f8f9fa; border-radius:6px; padding:10px; text-align:center; position:relative; font-size:12px; }
+  .flow-step::after { content:"→"; position:absolute; right:-10px; top:50%; transform:translateY(-50%); color:#ccc; font-size:16px; }
+  .flow-step:last-child::after { display:none; }
+  .flow-num { width:22px; height:22px; background:#e63946; color:#fff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-bottom:4px; }
+  .result-badge { font-size: 22px; font-weight: 800; }
+  .disclaimer { font-size: 11px; color: #999; text-align: center; margin-top: 16px; padding: 12px; border-top: 1px solid #eee; }
+  .red { color: #c0392b; font-weight: 600; }
+  .green { color: #27ae60; font-weight: 600; }
+  hr { border: none; border-top: 1px dashed #ddd; margin: 12px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>量化反包法 2.0 收盘选股报告</h1>
+  <div class="sub">8月12日（周三）收盘 | 反包日 = 8月13日（周四）</div>
+  <div class="meta">
+    <span>数据：2026-08-12 收盘</span>
+    <span>今日涨停数：待确认</span>
+    <span>策略：二板/三板断板 → MA5低吸 → 竞价确认</span>
+  </div>
+</div>
+
+<!-- 今日回顾 -->
+<div class="section">
+  <h2>今日回顾：早上候选股的反包表现</h2>
+  <table>
+    <thead><tr><th>候选</th><th>代码</th><th>断板日</th><th>今日收盘</th><th>涨跌幅</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>瑞康医药</b></td><td>sz002589</td><td>8/11</td><td>3.55</td>
+        <td class="green">+9.91%</td><td><span class="tag tag-green">🔥 涨停反包</span></td>
+      </tr>
+      <tr>
+        <td><b>先导基电</b></td><td>sh600641</td><td>8/11</td><td>35.72</td>
+        <td class="green">+10.01%</td><td><span class="tag tag-green">🔥 涨停反包</span></td>
+      </tr>
+      <tr>
+        <td>招金黄金</td><td>sz000506</td><td>8/11</td><td>19.06</td>
+        <td>+0.90%</td><td><span class="tag tag-orange">弱反包</span></td>
+      </tr>
+      <tr>
+        <td>哈三联</td><td>sz002900</td><td>8/11</td><td>14.61</td>
+        <td>+0.21%</td><td><span class="tag tag-gray">无反包</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="highlight-box">
+    <h4>验证结论</h4>
+    <ul>
+      <li><b>推荐①瑞康医药</b>和<b>推荐②先导基电</b>双双涨停反包，策略命中率 <b>2/4 (50%)</b></li>
+      <li>这两只的共同特征：MA5偏离最小（+6.6%/+6.0%）、下影线极短、K线干净</li>
+      <li>招金黄金（大阴线断板）和哈三联（换手38%过高）反包失败，验证"对手盘重=难反包"</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 今日断板筛选 -->
+<div class="section">
+  <h2>今日断板股筛选（8/12 断板 → 8/13 反包日）</h2>
+  <p style="font-size:12px; color:#888; margin-bottom:12px;">
+    交叉比对：8月11日连板排名（2-3板） vs 8月12日收盘涨跌，找出8/11有2-3板连板但8/12未涨停的股票。
+  </p>
+
+  <h3>第一步：连板→断板识别</h3>
+  <table>
+    <thead><tr><th>股票</th><th>代码</th><th>8/11连板</th><th>8/12收盘</th><th>涨跌</th><th>状态</th></tr></thead>
+    <tbody>
+      <tr style="background:#fff9e6"><td><b>哈药股份</b></td><td>sh600664</td><td><span class="tag tag-red">3板</span></td><td>8.81</td><td>+6.53%</td><td><span class="tag tag-red">3板断板</span></td></tr>
+      <tr><td>国风新材</td><td>sz000859</td><td><span class="tag tag-orange">2板</span></td><td>10.20</td><td>-2.67%</td><td><span class="tag tag-orange">2板断板</span></td></tr>
+      <tr><td>联泰环保</td><td>sh603797</td><td><span class="tag tag-orange">2板</span></td><td>4.85</td><td>-3.96%</td><td><span class="tag tag-orange">2板断板</span></td></tr>
+      <tr><td>亚邦股份</td><td>sh603188</td><td><span class="tag tag-orange">2板</span></td><td>4.91</td><td>+0.61%</td><td><span class="tag tag-orange">2板断板</span></td></tr>
+      <tr><td>立新能源</td><td>sz001258</td><td><span class="tag tag-orange">2板</span></td><td>15.46</td><td>-2.95%</td><td><span class="tag tag-orange">2板断板</span></td></tr>
+      <tr><td>第一医药</td><td>sh600833</td><td><span class="tag tag-orange">2板</span></td><td>12.49</td><td>+3.14%</td><td><span class="tag tag-orange">2板断板</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>第二步：MA5偏离 + K线形态分析</h3>
+  <table>
+    <thead><tr><th>股票</th><th>断板日收</th><th>MA5</th><th>偏离</th><th>下影线</th><th>断板日形态</th><th>综合</th></tr></thead>
+    <tbody>
+      <tr style="background:#e8f5e9">
+        <td><b>国风新材</b></td><td>10.20</td><td>9.56</td><td class="red">+6.7%</td><td>0.21(短)</td><td>小阴线</td><td><span class="tag tag-green">★最优</span></td>
+      </tr>
+      <tr style="background:#e8f5e9">
+        <td><b>联泰环保</b></td><td>4.85</td><td>4.55</td><td class="red">+6.6%</td><td>0.07(极短)</td><td>小阴线</td><td><span class="tag tag-green">★最优</span></td>
+      </tr>
+      <tr>
+        <td><b>亚邦股份</b></td><td>4.91</td><td>4.47</td><td class="red">+9.8%</td><td>0.08(极短)</td><td>小阳线</td><td><span class="tag tag-blue">较好</span></td>
+      </tr>
+      <tr style="background:#fff9e6">
+        <td><b>哈药股份</b></td><td>8.81</td><td>7.53</td><td class="red">+17.0%</td><td>0(无)</td><td>中阳线</td><td><span class="tag tag-orange">特殊</span></td>
+      </tr>
+      <tr>
+        <td>立新能源</td><td>15.46</td><td>14.24</td><td class="red">+8.6%</td><td class="red">0.80(长!)</td><td>十字星</td><td><span class="tag tag-gray">❌避雷</span></td>
+      </tr>
+      <tr>
+        <td>第一医药</td><td>12.49</td><td>11.13</td><td class="red">+12.2%</td><td>0.24(短)</td><td>中阳线</td><td><span class="tag tag-gray">❌后排杂毛</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 推荐详情 -->
+<div class="section">
+  <h2>明日（8/13）反包日候选详情</h2>
+
+  <!-- 候选1: 国风新材 -->
+  <div class="card" style="border-left: 4px solid #e63946;">
+    <div class="card-top">
+      <div><span class="card-name">国风新材</span><span class="card-code">sz000859</span><span class="tag tag-red" style="margin-left:6px;">推荐①</span></div>
+      <div style="font-size:12px;color:#888;">新材料 | 2板断板</div>
+    </div>
+    <div style="font-size:12px;color:#666;">连板：8/10涨停(+10.05%) → 8/11涨停(+9.97%) → 8/12断板(-2.67%)</div>
+    <div class="card-metrics">
+      <div class="metric"><div class="metric-label">收盘/MA5</div><div class="metric-value" style="color:#333;">10.20 / 9.56</div></div>
+      <div class="metric"><div class="metric-label">MA5偏离</div><div class="metric-value" style="color:#c0392b;">+6.7%</div></div>
+      <div class="metric"><div class="metric-label">下影线</div><div class="metric-value" style="color:#27ae60;">0.21</div></div>
+      <div class="metric"><div class="metric-label">换手率</div><div class="metric-value" style="color:#333;">17.3%</div></div>
+    </div>
+    <div class="grid2">
+      <div class="item-good">✓ MA5偏离最小(+6.7%)，最贴近均线</div>
+      <div class="item-good">✓ 下影线短(0.21)，对手盘可控</div>
+      <div class="item-good">✓ K线干净，小阴线无极端形态</div>
+      <div class="item-neutral">○ 新材料板块，需确认是否龙头</div>
+    </div>
+  </div>
+
+  <!-- 候选2: 联泰环保 -->
+  <div class="card" style="border-left: 4px solid #e63946;">
+    <div class="card-top">
+      <div><span class="card-name">联泰环保</span><span class="card-code">sh603797</span><span class="tag tag-red" style="margin-left:6px;">推荐②</span></div>
+      <div style="font-size:12px;color:#888;">环保 | 2板断板</div>
+    </div>
+    <div style="font-size:12px;color:#666;">连板：8/10涨停(+10.07%) → 8/11涨停(+10.02%) → 8/12断板(-3.96%)</div>
+    <div class="card-metrics">
+      <div class="metric"><div class="metric-label">收盘/MA5</div><div class="metric-value" style="color:#333;">4.85 / 4.55</div></div>
+      <div class="metric"><div class="metric-label">MA5偏离</div><div class="metric-value" style="color:#c0392b;">+6.6%</div></div>
+      <div class="metric"><div class="metric-label">下影线</div><div class="metric-value" style="color:#27ae60;">0.07</div></div>
+      <div class="metric"><div class="metric-label">换手率</div><div class="metric-value" style="color:#333;">11.1%</div></div>
+    </div>
+    <div class="grid2">
+      <div class="item-good">✓ MA5偏离最优(+6.6%)</div>
+      <div class="item-good">✓ 下影线0.07，几乎为零，对手盘极轻</div>
+      <div class="item-good">✓ 换手率11%，筹码稳定</div>
+      <div class="item-neutral">○ 环保板块，需确认龙头地位</div>
+    </div>
+  </div>
+
+  <!-- 候选3: 亚邦股份 -->
+  <div class="card" style="border-left: 4px solid #f39c12;">
+    <div class="card-top">
+      <div><span class="card-name">亚邦股份</span><span class="card-code">sh603188</span><span class="tag tag-orange" style="margin-left:6px;">备选③</span></div>
+      <div style="font-size:12px;color:#888;">化工 | 2板断板</div>
+    </div>
+    <div style="font-size:12px;color:#666;">连板：8/10涨停(+9.90%) → 8/11涨停(+9.91%) → 8/12断板(+0.61%)</div>
+    <div class="card-metrics">
+      <div class="metric"><div class="metric-label">收盘/MA5</div><div class="metric-value" style="color:#333;">4.91 / 4.47</div></div>
+      <div class="metric"><div class="metric-label">MA5偏离</div><div class="metric-value" style="color:#c0392b;">+9.8%</div></div>
+      <div class="metric"><div class="metric-label">下影线</div><div class="metric-value" style="color:#27ae60;">0.08</div></div>
+      <div class="metric"><div class="metric-label">换手率</div><div class="metric-value" style="color:#333;">15.5%</div></div>
+    </div>
+    <div class="grid2">
+      <div class="item-good">✓ 下影线极短(0.08)，K线形态好</div>
+      <div class="item-good">✓ 断板日收小阳线，多头仍在抵抗</div>
+      <div class="item-warn">⚠ MA5偏离+9.8%，略远离均线</div>
+      <div class="item-neutral">○ 化工板块，辨识度一般</div>
+    </div>
+  </div>
+
+  <!-- 候选4: 哈药股份 - 特殊 -->
+  <div class="card" style="border-left: 4px solid #3498db;">
+    <div class="card-top">
+      <div><span class="card-name">哈药股份</span><span class="card-code">sh600664</span><span class="tag tag-blue" style="margin-left:6px;">特殊关注</span></div>
+      <div style="font-size:12px;color:#888;">医药生物龙头 | 3板断板</div>
+    </div>
+    <div style="font-size:12px;color:#666;">连板：8/7涨停 → 8/10涨停 → 8/11涨停（3连板）→ 8/12断板(+6.53%)</div>
+    <div class="card-metrics">
+      <div class="metric"><div class="metric-label">收盘/MA5</div><div class="metric-value" style="color:#333;">8.81 / 7.53</div></div>
+      <div class="metric"><div class="metric-label">MA5偏离</div><div class="metric-value" style="color:#e74c3c;">+17.0%</div></div>
+      <div class="metric"><div class="metric-label">下影线</div><div class="metric-value" style="color:#27ae60;">0</div></div>
+      <div class="metric"><div class="metric-label">换手率</div><div class="metric-value" style="color:#333;">23.8%</div></div>
+    </div>
+    <div class="grid2">
+      <div class="item-good">✓ <b>医药板块绝对龙头</b>，辨识度最高</div>
+      <div class="item-good">✓ 断板日无下影线，强势整理</div>
+      <div class="item-good">✓ 视频案例中直接点名，策略适配</div>
+      <div class="item-bad">✗ MA5偏离+17.0%，远超理想范围</div>
+      <div class="item-warn">⚠ 5日涨幅+30%，获利盘极重</div>
+    </div>
+    <div style="font-size:12px; background:#e3f2fd; padding:10px; border-radius:5px; margin-top:8px;">
+      <b>特殊说明：</b>此票是策略视频中明确点名的案例股（"哈药股份/哈三联 同批次反包案例"）。作为医药板块3板龙头，辨识度顶级。但MA5偏离过大，需以<b>集合竞价强势（大幅高开+红柱）</b>为前提条件，否则不宜追。
+    </div>
+  </div>
+</div>
+
+<!-- 避雷区 -->
+<div class="section">
+  <h2>❌ 避雷：明确排除的股票</h2>
+
+  <div class="danger-box">
+    <h4>立新能源 (sz001258) — 长下影线避雷</h4>
+    <p style="font-size:13px;">
+      断板日K线：开15.45 → 高16.88 → 低14.65 → 收15.46<br>
+      <b class="red">下影线 = 0.80（长！）</b> — 策略核心避雷项<br>
+      14.65处的廉价筹码是明天的对手盘，次日一旦不是大幅低开就会被这批获利盘"砸死"。<br>
+      昨日案例：景旺电子断板日下影线4.78 → 次日-7.00%、锴威特下影线5.90 → 次日大盘跌。
+    </p>
+  </div>
+
+  <div class="danger-box">
+    <h4>第一医药 (sh600833) — 后排杂毛避雷</h4>
+    <p style="font-size:13px;">
+      医药板块已有明确龙头<b>哈药股份（3板）</b>和<b>开开实业（5板）</b>。<br>
+      板块存在多个高辨识度标的时，<b class="red">不选后排跟风股</b>。<br>
+      策略原话："板块已有明确龙头、且存在多个高辨识度标的时，不要选后排杂毛。"
+    </p>
+  </div>
+</div>
+
+<!-- 观察列表 -->
+<div class="section">
+  <h2>观察列表：仍在连板中的潜在标的</h2>
+  <p style="font-size:12px;color:#888;margin-bottom:10px;">以下股票今日仍在连板中，若明天（8/13）断板，则后天（8/14）成为反包日候选。</p>
+  <table>
+    <thead><tr><th>股票</th><th>代码</th><th>当前连板</th><th>板块</th><th>今日表现</th></tr></thead>
+    <tbody>
+      <tr><td>百花医药</td><td>sh600721</td><td><span class="tag tag-red">7板</span></td><td>医药</td><td>+10.04%一字</td></tr>
+      <tr><td>开开实业</td><td>sh600272</td><td><span class="tag tag-red">5板</span></td><td>医药商业</td><td>+10.00%</td></tr>
+      <tr><td>秦安股份</td><td>sh603758</td><td><span class="tag tag-red">4板</span></td><td>汽车零部件</td><td>+10.02%一字</td></tr>
+      <tr><td>京投发展</td><td>sh600683</td><td><span class="tag tag-orange">3板</span></td><td>房地产</td><td>+10.02%一字</td></tr>
+      <tr><td>一鸣食品</td><td>sh605179</td><td><span class="tag tag-orange">3板</span></td><td>食品饮料</td><td>+9.99%</td></tr>
+      <tr><td>华东数控</td><td>sz002248</td><td><span class="tag tag-orange">3板</span></td><td>通用设备</td><td>+10.04%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 操作指南 -->
+<div class="section">
+  <h2>明日操作要点</h2>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-num">1</div><div style="font-weight:600;font-size:12px;">9:15-9:25</div><div style="font-size:11px;color:#888;">盯集合竞价红柱</div></div>
+    <div class="flow-step"><div class="flow-num">2</div><div style="font-weight:600;font-size:12px;">开盘确认</div><div style="font-size:11px;color:#888;">是否开在MA5附近</div></div>
+    <div class="flow-step"><div class="flow-num">3</div><div style="font-weight:600;font-size:12px;">沿MA5低吸</div><div style="font-size:11px;color:#888;">逢低买入不追高</div></div>
+    <div class="flow-step"><div class="flow-num">4</div><div style="font-weight:600;font-size:12px;">设止损</div><div style="font-size:11px;color:#888;">破MA10止损</div></div>
+    <div class="flow-step"><div class="flow-num">5</div><div style="font-weight:600;font-size:12px;">控仓位</div><div style="font-size:11px;color:#888;">单票&lt;15%总仓位</div></div>
+  </div>
+  <div class="danger-box">
+    <h4>⚠ 风险提示</h4>
+    <ul style="font-size:12px;">
+      <li>以上仅为策略规则的客观筛选，<b>不构成投资建议</b></li>
+      <li>短线断板反包属<b>高波动高回撤</b>玩法，单笔亏损可能超10%</li>
+      <li>最终买点须以集合竞价红柱确认，竞价不达标则不买</li>
+      <li>若低开在MA5下方且长时间拉不起来，放弃操作</li>
+      <li>量化策略alpha会随时间衰减，注意灵活调整</li>
+    </ul>
+  </div>
+</div>
+
+<div class="disclaimer">
+  量化反包法2.0 选股报告 | WorkBuddy 自动生成 | 数据来源：腾讯自选股 | 仅供学习研究参考
+</div>
+
+</div>
+</body>
+</html>

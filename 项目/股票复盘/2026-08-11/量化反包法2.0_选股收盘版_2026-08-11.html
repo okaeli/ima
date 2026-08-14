@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>量化反包法2.0 选股收盘版 · 2026-08-11</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7fa;color:#1a2233;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.7}
+.wrap{max-width:1060px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:23px;margin:0 0 6px}
+h2{font-size:17px;margin:34px 0 14px;padding-left:11px;border-left:4px solid #2b6cb0}
+.meta{color:#6b7787;font-size:12.5px;margin-bottom:20px}
+.card{background:#fff;border:1px solid #e4e8ef;border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.tldr{background:linear-gradient(180deg,#fffaf3,#fff);border:1px solid #e0a96d;border-left:5px solid #d98514;border-radius:10px;padding:20px 24px;margin-bottom:22px}
+.tldr h2{margin:0 0 12px;border:none;padding:0;font-size:16px;color:#8a5a18}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.pk{border:1px solid #e4e8ef;border-radius:9px;padding:15px 17px}
+.pk.win{border-color:#a9d6b8;background:linear-gradient(180deg,#f3fbf6,#fff)}
+.pk.lose{border-color:#e0c4c4;background:linear-gradient(180deg,#fdf4f2,#fff)}
+.pk .nm{font-size:18px;font-weight:700}.pk .cd{font-size:12px;color:#8892a3;margin-bottom:8px}
+.kv{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px dashed #eef1f6}
+.kv:last-child{border:none}.kv span:first-child{color:#6b7787}.kv b{font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff}
+th{background:#eef2f7;color:#3b4a61;font-weight:600;padding:9px 7px;text-align:center;border-bottom:2px solid #dde3ec;font-size:12px}
+td{padding:9px 7px;text-align:center;border-bottom:1px solid #f0f2f6}
+tr.hl{background:#f4fbf7}
+.sub{color:#98a2b3;font-size:11px}
+.up{color:#c0392b;font-weight:600}.dn{color:#1e9e6a;font-weight:600}.fl{color:#6b7787}
+.dev.g{color:#1e9e6a}.dev.r{color:#b0b7c3}
+td.warn{background:#fdf3f0;color:#c0392b;font-weight:600}
+.bd{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;white-space:nowrap}
+.bd.pass{background:#dcf3e8;color:#15794f}.bd.fail{background:#f0f2f6;color:#95a0b0}.bd.fl{background:#eef2f7;color:#6b7787}
+.chart{width:100%;height:320px}
+.note{background:#fdfaf3;border:1px solid #eee0c4;border-radius:8px;padding:13px 16px;font-size:12.5px;color:#6b5a35;margin:14px 0}
+.risk{background:#fdf4f2;border:1px solid #f2d5cd;border-radius:8px;padding:13px 16px;font-size:12.5px;color:#8c3d2c;margin:14px 0}
+.disc{background:#f0f2f6;border-radius:8px;padding:15px 18px;font-size:12px;color:#5b6779;margin-top:30px}
+@media(max-width:820px){.pick{grid-template-columns:1fr}.chart{height:280px}}
+</style></head><body><div class="wrap">
+
+<h1>量化反包法 2.0 · 选股（收盘版 2026-08-11）</h1>
+<div class="meta">数据时点：<b>2026-08-11 15:00 收盘</b>　|　断板基准：8/10 / 8/11　|　
+数据源：腾讯自选股（westock-data / westock-tool）收盘行情 + 连板梯队</div>
+
+<div class="tldr">
+<h2>收盘结论</h2>
+<p><b>① 上一轮选出的 7 只，收盘确认仅武汉凡谷（002194）干净反包涨停（+10.00%）。</b>
+8/10 近跌停断板（-9.91%），今日以涨停收回失地，是全场唯一达标标的。通宇通讯收 33.74（-1.06%）反包失败；
+和远气体、锴威特、有研新材虽微高于断板价但均未涨停，不视为有效反包。</p>
+<p><b>② 明日（8/12）反包候选：今日（8/11）断板的 2–3 板票共 8 只，步骤3「贴 MA5」收盘后<b style="color:#c0392b">仍全部不通过</b></b>
+（偏离 +5.99%~+23.69%）。原因不变：它们集中在今日大涨的<b>医药/CRO/黄金</b>板块，被板块情绪带飞、脱离均线。
+<b>严格按策略，明日无达标候选</b>；最贴近阈值的是先锋基电（+5.99%）、招金黄金（+6.05%），需等回踩 MA5。</p>
+<p><b>③ 一句话：今天策略兑现了一个（武汉凡谷），但明天没有现成买点——耐心等回踩。</b></p>
+</div>
+
+<h2>一、上一轮 7 只收盘反包结果</h2>
+<div class="card" style="padding:0;overflow-x:auto">
+<table><thead><tr><th>个股</th><th>8/7连板</th><th>8/10<br>断板收</th><th>今日收盘</th><th>今日涨跌</th><th>反包判定</th></tr></thead>
+<tbody><tr class="hl"><td><b>武汉凡谷</b><br><span class="sub">sz002194</span></td><td>2板</td><td>10.00</td><td>11.00</td><td class="up">+10.00%</td><td><span class="bd pass">反包涨停 ✓</span></td></tr><tr class=""><td><b>通宇通讯</b><br><span class="sub">sz002792</span></td><td>2板</td><td>34.10</td><td>33.74</td><td class="dn">-1.06%</td><td><span class="bd fail">未反包 ✗</span></td></tr><tr class="hl"><td><b>和远气体</b><br><span class="sub">sz002971</span></td><td>3板</td><td>44.38</td><td>45.00</td><td class="up">+1.40%</td><td><span class="bd pass">微高于断板价(未涨停)</span></td></tr><tr class=""><td><b>景旺电子</b><br><span class="sub">sh603228</span></td><td>2板</td><td>96.00</td><td>89.28</td><td class="dn">-7.00%</td><td><span class="bd fail">未反包 ✗</span></td></tr><tr class="hl"><td><b>锴威特</b><br><span class="sub">sh688693</span></td><td>2板</td><td>85.20</td><td>85.96</td><td class="up">+0.89%</td><td><span class="bd pass">微高于断板价(未涨停)</span></td></tr><tr class=""><td><b>方正科技</b><br><span class="sub">sh600601</span></td><td>2板</td><td>13.22</td><td>12.74</td><td class="dn">-3.63%</td><td><span class="bd fail">未反包 ✗</span></td></tr><tr class="hl"><td><b>有研新材</b><br><span class="sub">sh600206</span></td><td>3板</td><td>52.03</td><td>52.65</td><td class="up">+1.19%</td><td><span class="bd pass">微高于断板价(未涨停)</span></td></tr></tbody></table></div>
+<div class="note"><b>反包定义</b>：今日收盘须<b>高于</b> 8/10 断板日收盘价（收回失地）且最好涨停。仅 <b>武汉凡谷</b> 达标；
+和远气体/锴威特/有研新材虽收盘价略高于断板价，但涨幅极小且未涨停，属"勉强收回、无反包力度"，不计入成功。</div>
+
+<h2>二、策略复盘：形态标准 + 对手盘轻 > 龙头光环</h2>
+<div class="pick">
+  <div class="pk win">
+    <div class="nm">武汉凡谷 · 反包涨停 ✓</div><div class="cd">002194 · 6G射频（跟风位）</div>
+    <div class="kv"><span>8/10 断板</span><b class="dn">-9.91%（近跌停）</b></div>
+    <div class="kv"><span>收盘离 MA5</span><b>+1.05%（最贴）</b></div>
+    <div class="kv"><span>筹码获利盘</span><b class="dn">49.25%（对手盘最轻）</b></div>
+    <div class="kv"><span>今日收盘</span><b class="up">11.00 / +10.00% 涨停</b></div>
+  </div>
+  <div class="pk lose">
+    <div class="nm">通宇通讯 · 反包失败 ✗</div><div class="cd">002792 · 6G天线（绝对龙头）</div>
+    <div class="kv"><span>8/10 断板</span><b class="dn">-8.31%</b></div>
+    <div class="kv"><span>收盘离 MA5</span><b>+3.59%</b></div>
+    <div class="kv"><span>筹码获利盘</span><b class="up">57.89%（对手盘更重）</b></div>
+    <div class="kv"><span>今日收盘</span><b class="dn">33.74 / -1.06%</b></div>
+  </div>
+</div>
+<p style="font-size:13px;color:#4a5568">说明第 2 条「优先板块龙头」与第 3/4 条「贴 MA5 + 次日沿 MA5 低吸」+ 心法「算清对手盘」这次打架。
+实盘证明：在<b>断板反包</b>这种捡便宜筹码的玩法里，<b>「贴着均线 + 对手盘轻」比「龙头光环」更可靠</b>——
+龙头断板当天若获利盘过重，反包抛压更大。武汉凡谷全天最低即开盘价、涨停封死，是教科书式反包。</p>
+
+<h2>三、明日（8/12）反包候选：今日 8 只断板股（收盘步骤3）</h2>
+<div class="card">
+<p style="margin-top:0;font-size:13px">口径：8/10 处于 2–3 连板、且<b>今日（8/11）未再涨停</b>的票（即今日断板）。共 8 只；
+仍涨停的健康连板（开开实业、秦安股份、哈药股份）按策略剔除。对照「步骤3：断板日收盘贴 MA5（≤5%）」。</p>
+<table><thead><tr><th>个股</th><th>连板</th><th>题材</th><th>今收</th><th>MA5</th>
+<th>离MA5<br>(步骤3)</th><th>下影<br>(避雷②)</th><th>振幅</th><th>判定</th></tr></thead>
+<tbody><tr class=""><td><b>先导基电</b><br><span class="sub">sh600641</span></td><td>2板</td><td>半导体设备/先进封装</td><td>32.47</td><td>30.64</td><td class="dev r"><b>+5.99%</b></td><td>1.17%</td><td>10.78%</td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>招金黄金</b><br><span class="sub">sz000506</span></td><td>2板</td><td>黄金/有色</td><td>18.89</td><td>17.81</td><td class="dev r"><b>+6.05%</b></td><td>1.64%</td><td>12.14%</td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>瑞康医药</b><br><span class="sub">sz002589</span></td><td>2板</td><td>医药流通/养老</td><td>3.23</td><td>3.03</td><td class="dev r"><b>+6.67%</b></td><td>2.48%</td><td>5.09%</td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>哈三联</b><br><span class="sub">sz002900</span></td><td>2板</td><td>医美/化学制药</td><td>14.58</td><td>13.57</td><td class="dev r"><b>+7.44%</b></td><td>0.00%</td><td>10.11%</td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>高争民爆</b><br><span class="sub">sz002827</span></td><td>3板</td><td>民爆/军工</td><td>58.61</td><td>53.27</td><td class="dev r"><b>+10.02%</b></td><td>3.58%</td><td>5.15%</td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>誉衡药业</b><br><span class="sub">sz002437</span></td><td>2板</td><td>创新药/化学制药</td><td>3.51</td><td>3.16</td><td class="dev r"><b>+10.94%</b></td><td>0.00%</td><td>11.95%</td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>毕得医药</b><br><span class="sub">sh688073</span></td><td>2板</td><td>创新药/CRO</td><td>75.41</td><td>62.74</td><td class="dev r"><b>+20.19%</b></td><td class="warn">6.51%</td><td>11.42%</td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>百普赛斯</b><br><span class="sub">sz301080</span></td><td>2板</td><td>创新药/CRO</td><td>82.30</td><td>66.54</td><td class="dev r"><b>+23.69%</b></td><td>3.30%</td><td>16.10%</td><td><span class="bd fail">淘汰</span></td></tr></tbody></table></div>
+<div class="card"><div id="devc" class="chart"></div></div>
+<div class="risk"><b>全部淘汰的核心原因：</b>今日断板的 8 只几乎全在<b>医药/CRO（誉衡药业、毕得医药、百普赛斯、哈三联、瑞康医药）+ 黄金（招金黄金）+ 民爆（高争民爆）+ 半导体（先锋基电）</b>。
+这些板块今日集体大涨（医药商业领涨、哈药股份 2→3 板仍封死），把断板股也带飞，
+收盘普遍高出 MA5 达 6%~24%。说明第 6 条明确"过度脱离均线的不碰"，故严格无达标候选。
+<b>最贴近阈值：先锋基电 +5.99%、招金黄金 +6.05%</b>——差一口气，值得挂单观察回踩。</div>
+
+<h2>四、操作建议（按说明步骤 4）</h2>
+<div class="card">
+<ul>
+<li><b>真买点 = 回踩 MA5。</b>8 只里离 MA5 最近的（先锋基电 +5.99%、招金黄金 +6.05%、瑞康医药 +6.67%、哈三联 +7.44%、高争民爆 +10.02%）若未来 1–2 日缩量回踩至 MA5 附近
+（先锋基电≈30.6、招金黄金≈17.8、瑞康医药≈3.0、哈三联≈13.6、高争民爆≈53.3），才重新进入策略射程。</li>
+<li><b>优先板块龙头、避雷后排。</b>医药这波龙头是<b>哈药股份</b>（3 板）；今日断板医药股多为<b>后排跟风</b>，按说明第 2 条谨慎，除非回踩 MA5 且板块未退潮。</li>
+<li><b>步骤 5 竞价红柱</b>届时仍需在行情软件自行确认（数据源不覆盖竞价明细，不编数据）。</li>
+<li><b>已持有的武汉凡谷</b>：反包涨停已验证策略，但连板/反包后波动大，按自身风控处理，本报告不追高建议。</li>
+</ul>
+<div class="note">观察清单（仅观察，非买入建议）：先锋基电、招金黄金、瑞康医药、哈三联、高争民爆——等待回踩 MA5 信号。</div>
+</div>
+
+<h2>五、收盘盘面环境</h2>
+<div class="card">
+<p style="margin-top:0">上证指数 3934.09 -0.82%　深证成指 14259.44 -0.40%　创业板指 3549.16 +0.34%　沪深300 4663.79 -0.81%</p>
+<p style="font-size:12.5px;color:#5b6779">指数震荡偏弱、成交缩量，属<b>弱市</b>——契合说明"弱势行情做低位题材反包"的土壤。
+但日内资金高度抱团<b>医药/创新药</b>，断板股被板块情绪推离均线，反而削弱"干净反包"的性价比。
+明日若医药分化、断板股回踩 MA5，才是策略真正舒服的出手时机。</p>
+</div>
+
+<div class="disc"><b>免责声明</b>：以上内容基于公开收盘数据与量化策略推演，仅供参考，不构成投资建议。市场有风险，投资需谨慎。
+任何投资决策应结合个人风险承受能力独立判断，必要时咨询持牌专业机构。过往表现（含武汉凡谷本次反包）不预示未来收益。</div>
+
+</div>
+<script>
+
+const CD=[{"code": "sh600641", "name": "先导基电", "lb": 2, "theme": "半导体设备/先进封装", "close": 32.47, "ma5": 30.64, "dev": 5.99, "lowsh": 1.17, "amp": 10.78, "chg": 706744.0}, {"code": "sz000506", "name": "招金黄金", "lb": 2, "theme": "黄金/有色", "close": 18.89, "ma5": 17.81, "dev": 6.05, "lowsh": 1.64, "amp": 12.14, "chg": 0}, {"code": "sz002589", "name": "瑞康医药", "lb": 2, "theme": "医药流通/养老", "close": 3.23, "ma5": 3.03, "dev": 6.67, "lowsh": 2.48, "amp": 5.09, "chg": 0}, {"code": "sz002900", "name": "哈三联", "lb": 2, "theme": "医美/化学制药", "close": 14.58, "ma5": 13.57, "dev": 7.44, "lowsh": 0.0, "amp": 10.11, "chg": 0}, {"code": "sz002827", "name": "高争民爆", "lb": 3, "theme": "民爆/军工", "close": 58.61, "ma5": 53.27, "dev": 10.02, "lowsh": 3.58, "amp": 5.15, "chg": 0}, {"code": "sz002437", "name": "誉衡药业", "lb": 2, "theme": "创新药/化学制药", "close": 3.51, "ma5": 3.16, "dev": 10.94, "lowsh": 0.0, "amp": 11.95, "chg": 0}, {"code": "sh688073", "name": "毕得医药", "lb": 2, "theme": "创新药/CRO", "close": 75.41, "ma5": 62.74, "dev": 20.19, "lowsh": 6.51, "amp": 11.42, "chg": 5155291.0}, {"code": "sz301080", "name": "百普赛斯", "lb": 2, "theme": "创新药/CRO", "close": 82.3, "ma5": 66.54, "dev": 23.69, "lowsh": 3.3, "amp": 16.1, "chg": 0}];
+const RED='#c0392b', GRN='#1e9e6a';
+function devChart(){
+  var names=CD.map(function(x){return x.name;}).reverse();
+  var vals=CD.map(function(x){return x.dev;}).reverse();
+  echarts.init(document.getElementById('devc')).setOption({
+    title:{text:'今日断板股 收盘偏离MA5（步骤3：阈值≤5%）',left:'center',textStyle:{fontSize:13,fontWeight:600,color:'#1a2233'}},
+    tooltip:{trigger:'axis',formatter:'{b}: {c}%'},
+    grid:{left:78,right:54,top:46,bottom:30},
+    xAxis:{type:'value',axisLabel:{formatter:'{value}%',fontSize:10,color:'#7a8699'},splitLine:{lineStyle:{color:'#eef1f6'}}},
+    yAxis:{type:'category',data:names,axisLabel:{fontSize:11,color:'#334155'}},
+    series:[{type:'bar',barWidth:16,
+      data:vals.map(function(v){return {value:v,itemStyle:{color:v<=5?GRN:'#cbd5e1'}};}),
+      label:{show:true,position:'right',formatter:'{c}%',fontSize:10,color:'#475569'},
+      markLine:{symbol:'none',silent:true,data:[{xAxis:5,lineStyle:{color:RED,type:'dashed'},label:{formatter:'5%阈值',fontSize:10,color:RED}}]}}]
+  });
+}
+devChart();
+
+</script></body></html>

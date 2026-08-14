@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>断板反包选股手册 · 六条件评分体系</title>
+<style>
+  :root{
+    --red:#D64541; --red-deep:#B03A2E; --red-bg:#FDEDED;
+    --green:#1E8449; --green-bg:#EAFAF1;
+    --amber:#B9770E; --amber-bg:#FEF9E7;
+    --blue:#1F618D; --blue-bg:#EAF2F8;
+    --ink:#1C2833; --ink-2:#5D6D7E; --line:#E5E8EA;
+    --bg:#F8F9F9; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;padding:0 0 60px}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:32px 0 24px;margin-bottom:28px}
+  .kicker{font-size:12px;color:var(--ink-2);letter-spacing:2px;margin-bottom:6px}
+  h1{font-size:26px;font-weight:700;letter-spacing:1px}
+  h1 em{font-style:normal;color:var(--red)}
+  .slogan{margin-top:10px;font-size:14px;color:var(--ink-2)}
+  .slogan b{color:var(--red-deep)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:20px 0 34px}
+  .case{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .case h3{font-size:15px;font-weight:700;margin-bottom:2px}
+  .case .code{font-size:12px;color:var(--ink-2);margin-bottom:10px}
+  .case .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin:0 4px 4px 0}
+  .case .num{font-size:20px;font-weight:700;color:var(--red-deep);margin-top:8px}
+  .case .note{font-size:12px;color:var(--ink-2);margin-top:2px}
+  h2{font-size:19px;font-weight:700;margin:38px 0 6px;padding-left:12px;border-left:4px solid var(--red)}
+  .sub{font-size:13px;color:var(--ink-2);margin-bottom:18px;padding-left:12px}
+  .steps{display:grid;gap:12px;margin-bottom:10px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;display:flex;gap:16px;align-items:flex-start}
+  .step .no{flex:0 0 38px;height:38px;border-radius:50%;background:var(--red-bg);color:var(--red-deep);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center}
+  .step h4{font-size:15px;font-weight:700;margin-bottom:4px}
+  .step h4 .scope{font-size:12px;color:var(--ink-2);font-weight:400;margin-left:8px}
+  .step p{font-size:13px;color:var(--ink-2)}
+  .step p b{color:var(--ink)}
+  .checklist{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px 22px}
+  .score-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .score-head .left h3{font-size:16px;font-weight:700}
+  .score-head .left p{font-size:12px;color:var(--ink-2)}
+  .gauge{text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 22px}
+  .gauge .val{font-size:30px;font-weight:700;color:var(--red-deep);line-height:1.1}
+  .gauge .grade{font-size:12px;margin-top:2px;font-weight:600}
+  .gauge .advice{font-size:12px;color:var(--ink-2);margin-top:2px;white-space:nowrap}
+  .cat{margin-bottom:16px}
+  .cat-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .cat-title .pts{font-size:12px;color:var(--ink-2);font-weight:400}
+  .cat-title .bar{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+  .cat-title .bar i{display:block;height:100%;border-radius:2px}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:background .15s}
+  .opt:hover{background:var(--blue-bg)}
+  .opt.checked{background:var(--blue-bg);border-color:var(--blue)}
+  .opt input{margin-top:4px;accent-color:var(--red)}
+  .opt label{font-size:13px;cursor:pointer;flex:1}
+  .opt label b{font-size:13px}
+  .opt label span{display:block;font-size:12px;color:var(--ink-2)}
+  .opt .pv{font-size:12px;font-weight:700;color:var(--red-deep);flex:0 0 40px;text-align:right}
+  .veto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:12px;padding:16px 20px;margin-bottom:10px}
+  .veto h4{font-size:14px;font-weight:700;color:var(--red-deep);margin-bottom:8px}
+  .veto ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px 18px}
+  .veto li{font-size:13px;color:var(--ink-2);padding-left:20px;position:relative}
+  .veto li:before{content:"✕";position:absolute;left:0;color:var(--red);font-size:11px;top:1px}
+  .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .rule{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .rule h4{font-size:14px;font-weight:700;margin-bottom:10px}
+  .rule table{width:100%;font-size:12.5px;border-collapse:collapse}
+  .rule td{padding:5px 4px;border-bottom:1px dashed var(--line);vertical-align:top}
+  .rule td:first-child{white-space:nowrap;font-weight:600;color:var(--blue);width:74px}
+  .rule tr:last-child td{border-bottom:none}
+  .buy{background:var(--green-bg);border-left-color:var(--green)}
+  .sell{background:var(--red-bg);border-left-color:var(--red)}
+  .pos{background:var(--amber-bg);border-left-color:var(--amber)}
+  table.data{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px;margin-bottom:30px}
+  table.data th{background:var(--bg);font-size:12px;color:var(--ink-2);padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+  table.data td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.data tr:last-child td{border-bottom:none}
+  table.data .up{color:var(--red-deep);font-weight:700}
+  .foot{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-2)}
+  .btn{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;color:var(--ink-2)}
+  .btn:hover{border-color:var(--blue);color:var(--blue)}
+  .verdict{margin-top:12px;padding:12px 16px;border-radius:10px;font-size:13px;display:none}
+  .verdict.show{display:block}
+  .v5{background:var(--green-bg);border:1px solid var(--green);color:var(--green)}
+  .v4{background:var(--green-bg);border:1px solid var(--green);color:var(--green)}
+  .v3{background:var(--amber-bg);border:1px solid var(--amber);color:var(--amber)}
+  .v2{background:var(--red-bg);border:1px solid var(--red);color:var(--red-deep)}
+  @media print{.gauge{box-shadow:none}.step,.checklist,.veto,.rule,.case{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">A股短线战法 · 实证方法论（基于海鸥股份 / 誉衡药业 / 瑞康医药 2026-08-12 案例）</div>
+    <h1>断板反包选股手册 <em>· 六条件评分体系</em></h1>
+    <div class="slogan">断板日是<b>洗</b>——制造恐慌、散户割肉、主力吸筹；反包日是<b>拉</b>——超大单回流封板，完成对倒闭环。<br>
+    选股只看六件事：<b>洗而不破 · 主力不撤 · 放量换手 · 对倒承接 · 超大单回流 · 封板质量</b></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="cards">
+    <div class="case">
+      <h3>海鸥股份</h3><div class="code">603269 · 液冷概念</div>
+      <span class="tag" style="background:var(--blue-bg);color:var(--blue)">分歧型断板</span><span class="tag" style="background:var(--green-bg);color:var(--green)">缩量反包</span>
+      <div class="num">反包质量 ★★★★☆</div>
+      <div class="note">高开巨震洗盘，午后缩量37%封板，洗得最透、封得最稳</div>
+    </div>
+    <div class="case">
+      <h3>誉衡药业</h3><div class="code">002437 · 创新药主线</div>
+      <span class="tag" style="background:var(--blue-bg);color:var(--blue)">诱多型断板</span><span class="tag" style="background:var(--green-bg);color:var(--green)">龙虎榜背书</span>
+      <div class="num">反包质量 ★★★★☆</div>
+      <div class="note">机构+高胜率游资净买1.25亿，断板日洗盘最凶狠（换手28%）</div>
+    </div>
+    <div class="case">
+      <h3>瑞康医药</h3><div class="code">002589 · SPD+破净</div>
+      <span class="tag" style="background:var(--amber-bg);color:var(--amber)">破位型断板</span><span class="tag" style="background:var(--amber-bg);color:var(--amber)">板块抬轿</span>
+      <div class="num">反包质量 ★★★☆☆</div>
+      <div class="note">断板破位+主力出逃，靠板块情绪托底，含金量最低</div>
+    </div>
+  </div>
+
+  <h2>第一步 · 建池</h2>
+  <div class="sub">每个交易日收盘后，筛选符合断板条件的候选池</div>
+  <div class="steps">
+    <div class="step"><div class="no">1</div><div><h4>昨日涨停、今日未涨停<span class="scope">候选池筛选</span></h4>
+    <p>昨日收涨停（主板+9.9%以上 / 创业板+19.9%以上），今日涨幅未达涨停但<b>收盘仍为正或微跌（≥-3%）</b>。剔除：ST、上市不足60日、停牌股。</p></div></div>
+    <div class="step"><div class="no">2</div><div><h4>断板日形态过滤<span class="scope">洗盘质量初筛</span></h4>
+    <p>核心看三点：① <b>收盘价 ≥ 昨日涨停价</b>（洗而不破，最强信号）；② <b>振幅 ≥ 5%</b>（有真实洗盘动作）；③ <b>换手率 8%~30%</b>（充分换手，但非出货式天量）。</p></div></div>
+    <div class="step"><div class="no">3</div><div><h4>资金验证<span class="scope">最硬的证据</span></h4>
+    <p>断板日<b>主力资金净流入为正</b>（或流出额 &lt; 前3日累计流入的50%）；散户净流出（散户割肉、主力接货）；若上龙虎榜，要求<b>机构席位或高胜率游资净买</b>。</p></div></div>
+    <div class="step"><div class="no">4</div><div><h4>反包日确认<span class="scope">次日盘中买入信号</span></h4>
+    <p>次日（T+2）开盘<b>不破断板日最低价</b>；分时出现放量拉升；盘中主力净流入超过断板日流出额；封板或大幅拉升后<b>封单稳定</b>。</p></div></div>
+    <div class="step"><div class="no">5</div><div><h4>风控过滤<span class="scope">一票否决+超买降级</span></h4>
+    <p>检查下方"一票否决"清单；RSI6&gt;95、连续3日涨幅偏离&gt;20%、纯概念无业绩背书 → 强制降级或放弃。</p></div></div>
+  </div>
+
+  <h2>第二步 · 六条件评分卡</h2>
+  <div class="sub">按个股实际数据勾选打分，满分100。85+核心标的 / 70+重点关注 / 55+观察 / &lt;55放弃</div>
+  <div class="checklist">
+    <div class="score-head">
+      <div class="left"><h3>断板反包评分卡</h3><p>勾选符合的条目，实时计算总分</p></div>
+      <div class="gauge">
+        <div class="val" id="total">0</div>
+        <div class="grade" id="grade">未评分</div>
+        <div class="advice" id="advice">—</div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="cat-title">A · 断板形态 <span class="pts">25分</span><span class="bar"><i id="barA" style="width:0%;background:var(--blue)"></i></span></div>
+      <div class="opt" data-p="10" data-cat="A"><input type="checkbox" id="A1"><label for="A1"><b>断板日收盘 ≥ 前涨停价（洗而不破）</b><span>收盘守住昨板价，多头底线未破——三票全部满足</span></label><div class="pv">10</div></div>
+      <div class="opt" data-p="5" data-cat="A"><input type="checkbox" id="A2"><label for="A2"><b>断板日振幅 ≥ 5%</b><span>有剧烈洗盘动作，海鸥8.4% / 誉衡12% / 瑞康5.1%</span></label><div class="pv">5</div></div>
+      <div class="opt" data-p="5" data-cat="A"><input type="checkbox" id="A3"><label for="A3"><b>断板日换手 8%~30%</b><span>充分换手清洗浮筹，过高（>30%）疑似出货</span></label><div class="pv">5</div></div>
+      <div class="opt" data-p="5" data-cat="A"><input type="checkbox" id="A4"><label for="A4"><b>断板日盘中曾触板/冲高回落</b><span>有上攻意图，诱多式冲板（誉衡差一分封板）更佳</span></label><div class="pv">5</div></div>
+    </div>
+
+    <div class="cat">
+      <div class="cat-title">B · 资金证据 <span class="pts">30分</span><span class="bar"><i id="barB" style="width:0%;background:var(--red)"></i></span></div>
+      <div class="opt" data-p="10" data-cat="B"><input type="checkbox" id="B1"><label for="B1"><b>断板日主力净流入为正</b><span>主力不撤——海鸥+5002万 / 誉衡+9826万；瑞康-7320万扣分</span></label><div class="pv">10</div></div>
+      <div class="opt" data-p="5" data-cat="B"><input type="checkbox" id="B2"><label for="B2"><b>断板日散户净流出</b><span>散户恐慌割肉，主力反向承接</span></label><div class="pv">5</div></div>
+      <div class="opt" data-p="5" data-cat="B"><input type="checkbox" id="B3"><label for="B3"><b>断板日融资盘净买入/未大幅出逃</b><span>杠杆资金立场：瑞康+1465万加仓 vs 誉衡-7086万跑路</span></label><div class="pv">5</div></div>
+      <div class="opt" data-p="5" data-cat="B"><input type="checkbox" id="B4"><label for="B4"><b>龙虎榜机构/高胜率游资净买</b><span>誉衡3日榜净买1.25亿，两个胜率56%+游资席位</span></label><div class="pv">5</div></div>
+      <div class="opt" data-p="5" data-cat="B"><input type="checkbox" id="B5"><label for="B5"><b>反包日主力净流入 &gt; 断板日流出</b><span>瑞康断板-7320万 → 反包日+1.68亿，"出而后返"</span></label><div class="pv">5</div></div>
+    </div>
+
+    <div class="cat">
+      <div class="cat-title">C · 题材逻辑 <span class="pts">20分</span><span class="bar"><i id="barC" style="width:0%;background:var(--amber)"></i></span></div>
+      <div class="opt" data-p="8" data-cat="C"><input type="checkbox" id="C1"><label for="C1"><b>处于当日市场主线板块</b><span>8/12医药集体爆发，誉衡瑞康同台涨停；海鸥液冷共振</span></label><div class="pv">8</div></div>
+      <div class="opt" data-p="6" data-cat="C"><input type="checkbox" id="C2"><label for="C2"><b>板块内有高标龙头带队（≥3板）</b><span>龙头打出高度，情绪有参照锚</span></label><div class="pv">6</div></div>
+      <div class="opt" data-p="6" data-cat="C"><input type="checkbox" id="C3"><label for="C3"><b>有业绩/政策真实背书（非纯概念）</b><span>誉衡Q1净利+57.6%；海鸥冷却塔收入&lt;1.5%被澄清，扣分</span></label><div class="pv">6</div></div>
+    </div>
+
+    <div class="cat">
+      <div class="cat-title">D · 技术面 <span class="pts">15分</span><span class="bar"><i id="barD" style="width:0%;background:var(--green)"></i></span></div>
+      <div class="opt" data-p="5" data-cat="D"><input type="checkbox" id="D1"><label for="D1"><b>未严重超买（RSI6 &lt; 90 且 J值 &lt; 110）</b><span>超买过高则次日溢价空间被透支</span></label><div class="pv">5</div></div>
+      <div class="opt" data-p="5" data-cat="D"><input type="checkbox" id="D2"><label for="D2"><b>均线多头排列 / 站稳5日线</b><span>趋势未破坏，反包有均线支撑</span></label><div class="pv">5</div></div>
+      <div class="opt" data-p="5" data-cat="D"><input type="checkbox" id="D3"><label for="D3"><b>反包日成交量配合（非地量）</b><span>缩量封板最好（海鸥-37%），但过度缩量至地量则存疑</span></label><div class="pv">5</div></div>
+    </div>
+
+    <div class="cat">
+      <div class="cat-title">E · 反包确认 <span class="pts">10分</span><span class="bar"><i id="barE" style="width:0%;background:var(--red)"></i></span></div>
+      <div class="opt" data-p="4" data-cat="E"><input type="checkbox" id="E1"><label for="E1"><b>反包日分时放量拉升并封板</b><span>午后发力更稳（海鸥13:16 / 瑞康13:11五分钟暴拉）</span></label><div class="pv">4</div></div>
+      <div class="opt" data-p="3" data-cat="E"><input type="checkbox" id="E2"><label for="E2"><b>封板后封单稳定未反复炸板</b><span>誉衡11:13二次回封后稳住，质量合格</span></label><div class="pv">3</div></div>
+      <div class="opt" data-p="3" data-cat="E"><input type="checkbox" id="E3"><label for="E3"><b>反包日换手较断板日收敛</b><span>筹码锁定：海鸥10.5%→6.3%；瑞康18%→17%未收敛，扣分</span></label><div class="pv">3</div></div>
+    </div>
+
+    <div style="text-align:right"><button class="btn" onclick="resetScore()">重置评分</button></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <h2>第三步 · 一票否决</h2>
+  <div class="sub">命中任意一条，直接出局，不看评分</div>
+  <div class="veto">
+    <ul>
+      <li>断板日收盘跌破<b>首板成本价</b>（深破位，套牢盘全线涌出）</li>
+      <li>断板日主力净流出 &gt; 前5日累计净流入的50%（真出货）</li>
+      <li>ST / 退市风险警示 / 立案调查 / 业绩暴雷</li>
+      <li>上市不足60日（次新股，无套牢盘结构）</li>
+      <li>连续3日涨幅偏离值累超20%且已发异动公告（监管高压）</li>
+      <li>断板日跌停或跌幅 &gt; 5%（情绪崩塌，非洗盘）</li>
+    </ul>
+  </div>
+
+  <h2>第四步 · 买卖纪律</h2>
+  <div class="sub">三票实证 + 短线交易规则，严格执行</div>
+  <div class="rules">
+    <div class="rule buy"><h4>买入（反包日盘中）</h4>
+      <table>
+        <tr><td>买点1</td><td>早盘放量突破断板日最高价，确认回流</td></tr>
+        <tr><td>买点2</td><td>午后封板瞬间/回封时，跟随封单</td></tr>
+        <tr><td>买点3</td><td>回踩断板日收盘价不破，低吸</td></tr>
+        <tr><td>禁忌</td><td>开盘即大幅高开&gt;5%不追；无量冲板不追</td></tr>
+      </table>
+    </div>
+    <div class="rule sell"><h4>卖出（次日与持仓中）</h4>
+      <table>
+        <tr><td>卖点1</td><td>次日高开冲高不板，红盘了结</td></tr>
+        <tr><td>卖点2</td><td>跌破反包日开盘价，无条件离场</td></tr>
+        <tr><td>卖点3</td><td>板块龙头断板/退潮，同步止盈</td></tr>
+        <tr><td>纪律</td><td>反包战法持仓不超3日，快进快出</td></tr>
+      </table>
+    </div>
+    <div class="rule pos"><h4>仓位管理</h4>
+      <table>
+        <tr><td>核心票</td><td>评分≥85，单票 ≤ 20% 仓位</td></tr>
+        <tr><td>关注票</td><td>评分70-84，单票 ≤ 10% 仓位</td></tr>
+        <tr><td>观察票</td><td>评分55-69，轻仓试错 ≤ 5%</td></tr>
+        <tr><td>总仓</td><td>断板反包模式总仓位 ≤ 50%，不满仓</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h2>三股实证数据对照</h2>
+  <div class="sub">2026-08-11断板 → 2026-08-12反包 · 数据来源：腾讯自选股 MCP</div>
+  <table class="data">
+    <tr><th>指标</th><th>海鸥股份 603269</th><th>誉衡药业 002437</th><th>瑞康医药 002589</th></tr>
+    <tr><td>断板方式</td><td>高开巨震·分歧型</td><td>低开诱多·炸板型</td><td>高开跳水·破位型</td></tr>
+    <tr><td>断板日收盘</td><td class="up">15.96 &gt; 板价15.53</td><td class="up">3.51 &gt; 板价3.43</td><td class="down" style="color:var(--green)">3.23 &lt; 板价3.34 破位</td></tr>
+    <tr><td>断板日振幅</td><td>8.39%</td><td>11.95%</td><td>5.09%</td></tr>
+    <tr><td>断板日换手</td><td>10.54%</td><td>28.09%</td><td>18.18%</td></tr>
+    <tr><td>断板日主力</td><td class="up">+5002万 流入</td><td class="up">+9826万 流入</td><td style="color:var(--green)">-7320万 流出</td></tr>
+    <tr><td>反包日主力</td><td class="up">+5002万</td><td class="up">+3.23亿</td><td class="up">+1.68亿</td></tr>
+    <tr><td>对倒自洽</td><td>主力=散户（相等）</td><td>主力=散户（相等）</td><td>主力=散户（相等）</td></tr>
+    <tr><td>超大单</td><td class="up">+1707万→+4609万</td><td class="up">+1.99亿→+3.72亿</td><td class="up">-5996万→+1.80亿</td></tr>
+    <tr><td>反包换手</td><td>6.34%（缩量37%）</td><td>25.37%（平量）</td><td>17.11%（平量）</td></tr>
+    <tr><td>封板时间</td><td>13:16 午后封死</td><td>09:37触板→11:13回封</td><td>13:11-13:16 五分钟暴拉</td></tr>
+    <tr><td>题材</td><td>液冷（纯概念已澄清）</td><td>创新药（业绩+57.6%）</td><td>SPD+破净（板块抬轿）</td></tr>
+    <tr><td>资金证据链</td><td>无龙虎榜</td><td>机构+游资净买1.25亿</td><td>无龙虎榜</td></tr>
+    <tr><td>反包质量</td><td>★★★★☆ 缩量最稳</td><td>★★★★☆ 证据最硬</td><td>★★★☆☆ 含金量最低</td></tr>
+  </table>
+
+  <div class="foot">
+    <p><b>方法论要点：</b>反包成立与否，与断板形态（分歧/诱多/破位）无关，只取决于资金是否自洽——断板日洗盘换手、主力不撤、散户割肉，反包日超大单回流并全额承接散户抛盘。三只票反包日"主力净流入 = 散户净流出"的完全对倒，是资金真实性的铁证。</p>
+    <p style="margin-top:8px"><b>免责声明：</b>本手册基于公开数据与量化分析整理，仅供研究学习，不构成任何投资建议。短线交易风险极高，过往案例不预示未来收益。投资决策请结合个人风险承受能力独立判断，必要时咨询持牌专业机构。</p>
+  </div>
+</div>
+
+<script>
+  var opts = document.querySelectorAll('.opt');
+  var weights = {A:25, B:30, C:20, D:15, E:10};
+  function calc(){
+    var t = 0, per = {A:0,B:0,C:0,D:0,E:0};
+    opts.forEach(function(o){
+      if(o.querySelector('input').checked){
+        var p = parseInt(o.getAttribute('data-p'));
+        var c = o.getAttribute('data-cat');
+        t += p; per[c] += p;
+        o.classList.add('checked');
+      } else { o.classList.remove('checked'); }
+    });
+    document.getElementById('total').textContent = t;
+    for(var k in per){
+      document.getElementById('bar'+k).style.width = Math.round(per[k]/weights[k]*100) + '%';
+    }
+    var g = document.getElementById('grade'), a = document.getElementById('advice'), v = document.getElementById('verdict');
+    v.className = 'verdict show';
+    if(t >= 85){ g.textContent = '★★★★★ 核心标的'; g.style.color = '#1E8449'; a.textContent = '可重点跟踪'; v.className = 'verdict show v5'; v.textContent = '六条件全面满足，资金证据链完整，可列为次日重点标的，按纪律执行买入。'; }
+    else if(t >= 70){ g.textContent = '★★★★ 重点关注'; g.style.color = '#1E8449'; a.textContent = '可轻仓跟踪'; v.className = 'verdict show v4'; v.textContent = '主要条件满足，但存在扣分项。关注反包日早盘资金确认，控制仓位。'; }
+    else if(t >= 55){ g.textContent = '★★★ 观察'; g.style.color = '#B9770E'; a.textContent = '轻仓试错'; v.className = 'verdict show v3'; v.textContent = '资金证据或形态有缺失（如断板破位、主力流出），仅作观察，不主动参与。'; }
+    else { g.textContent = '不满足条件'; g.style.color = '#B03A2E'; a.textContent = '放弃'; v.className = 'verdict show v2'; v.textContent = '核心条件缺失，反包概率低，直接放弃，等待下一个断板标的。'; }
+  }
+  function resetScore(){
+    opts.forEach(function(o){ o.querySelector('input').checked = false; });
+    calc();
+    document.getElementById('verdict').className = 'verdict';
+    document.getElementById('grade').textContent = '未评分';
+    document.getElementById('advice').textContent = '—';
+    document.getElementById('total').textContent = '0';
+  }
+  opts.forEach(function(o){ o.querySelector('input').addEventListener('change', calc); o.addEventListener('click', function(e){ if(e.target.tagName !== 'INPUT'){ var inp = o.querySelector('input'); inp.checked = !inp.checked; calc(); } }); });
+  calc();
+</script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+{
+  "main": {
+    "id": "68ee1134a2e05940",
+    "type": "split",
+    "children": [
+      {
+        "id": "9ddd6e80e7854c77",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "08cce93902b460f8",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "每日复盘/未命名.canvas",
+                "viewState": {
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 0
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "未命名"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "39aee47fbceda253",
+    "type": "split",
+    "children": [
+      {
+        "id": "b5e6a7bff479cf42",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ff6de492b81825c8",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "fadb4e0a7123bf8f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "42b7ef935576f5cc",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          },
+          {
+            "id": "592784b80fe4434a",
+            "type": "leaf",
+            "state": {
+              "type": "recent-files",
+              "state": {},
+              "icon": "clock",
+              "title": "Recent files"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "2bcd81070720c5e8",
+    "type": "split",
+    "children": [
+      {
+        "id": "98a245f22937da2c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c034e012437d31e0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "raw/docker安装和使用指南.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "出链"
+            }
+          },
+          {
+            "id": "abaa135443c3f23b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "raw/如何打造一本书的Ai知识库.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向链接"
+            }
+          },
+          {
+            "id": "680700ed91849fb7",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "49a45a898a980ca8",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "2ad219fdb3076d8e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "raw/docker安装和使用指南.md",
+                "followCursor": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
+            }
+          },
+          {
+            "id": "f0a711180beca6d0",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "horizontal",
+    "width": 591.5
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "markdown-importer:打开 Markdown 格式转换器": false,
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "workspaces:管理工作区布局": false,
+      "dual-link:DualLink": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "ff6de492b81825c8",
+  "lastOpenFiles": [
+    "每日复盘/2026-08-10.md",
+    "每日复盘/未命名.canvas",
+    "未命名.md",
+    "raw/docker安装和使用指南.md",
+    "网站/收藏网站.md",
+    "未命名 1.md",
+    "每日复盘/2026-08-10.cancvs",
+    "每日复盘/22.md",
+    "每日复盘/2026-08-10.canvas",
+    "每日复盘/2026-08-10.Xmind",
+    "新建文件夹",
+    "每日复盘/1.html",
+    "每日复盘/2222.md",
+    "每日复盘/111.md",
+    "raw/如何打造一本书的Ai知识库.md",
+    "日记/2026-08-08.md",
+    "日记",
+    "2026-08-08.md",
+    "raw/MARKDOWN语法.md",
+    "raw/video/cpu虚拟化设置.mp4",
+    "raw/test.md",
+    "raw/12323",
+    "raw/video",
+    "raw/新建文件夹",
+    "raw/raw-img/cpu虚拟化.png",
+    "raw/raw-img/obsidian专属用法.png",
+    "raw/raw-img/md格式.png",
+    "raw/raw-img/IMA.png",
+    "raw/raw-img",
+    "raw/MD格式.png",
+    "项目/小红书/未命名.md",
+    "raw/如何打造一本书的Ai知识库-1.png",
+    "Pasted image 20260808001354.png.md",
+    "如何打造一本书的Ai知识库-1.png",
+    "Pasted image 20260808001354.png",
+    "欢迎.md"
+  ]
+}

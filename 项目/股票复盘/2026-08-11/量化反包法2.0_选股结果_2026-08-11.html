@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>量化反包法2.0 选股结果 · 2026-08-11</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7fa;color:#1a2233;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+ font-size:14px;line-height:1.7}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:24px;margin:0 0 6px;letter-spacing:-.3px}
+h2{font-size:17px;margin:34px 0 14px;padding-left:11px;border-left:4px solid #2b6cb0}
+h3{font-size:14.5px;margin:20px 0 9px;color:#2d3a50}
+.meta{color:#6b7787;font-size:12.5px;margin-bottom:22px}
+.card{background:#fff;border:1px solid #e4e8ef;border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.tldr{background:linear-gradient(180deg,#fff 0%,#fbfcfe 100%);border:1px solid #d7e0ee;
+ border-left:5px solid #2b6cb0;border-radius:10px;padding:20px 24px;margin-bottom:22px}
+.tldr h2{margin:0 0 12px;border:none;padding:0;font-size:16px;color:#2b6cb0}
+.pickgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.pick{border:1px solid #e4e8ef;border-radius:9px;padding:15px 17px;background:#fff}
+.pick.p1{border-color:#e0a96d;background:linear-gradient(180deg,#fffaf3,#fff)}
+.pick.p2{border-color:#a9c4e0;background:linear-gradient(180deg,#f6fafd,#fff)}
+.pick .tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600;margin-bottom:8px}
+.p1 .tag{background:#f5e2c8;color:#8a5a18}
+.p2 .tag{background:#dbe8f4;color:#26557f}
+.pick .nm{font-size:19px;font-weight:700;margin-bottom:2px}
+.pick .cd{font-size:12px;color:#8892a3;margin-bottom:10px}
+.kv{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px dashed #eef1f6}
+.kv:last-child{border:none}
+.kv span:first-child{color:#6b7787}
+.kv b{font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff}
+th{background:#eef2f7;color:#3b4a61;font-weight:600;padding:9px 7px;text-align:center;
+ border-bottom:2px solid #dde3ec;white-space:nowrap;font-size:12px}
+td{padding:9px 7px;text-align:center;border-bottom:1px solid #f0f2f6}
+tr.hl{background:#f4fbf7}
+.sub{color:#98a2b3;font-size:11px}
+.up{color:#c0392b;font-weight:600} .dn{color:#1e9e6a;font-weight:600} .fl{color:#6b7787}
+.dev.g{color:#1e9e6a} .dev.r{color:#b0b7c3}
+td.warn{background:#fdf3f0;color:#c0392b;font-weight:600}
+.bd{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600;white-space:nowrap}
+.bd.pass{background:#dcf3e8;color:#15794f}
+.bd.fail{background:#f0f2f6;color:#95a0b0}
+.funnel{display:flex;flex-direction:column;gap:7px;margin:14px 0}
+.fstep{display:flex;align-items:center;gap:13px}
+.fbar{height:38px;border-radius:6px;display:flex;align-items:center;padding:0 15px;
+ color:#fff;font-weight:600;font-size:13px;white-space:nowrap}
+.fdesc{font-size:12.5px;color:#5b6779;flex:1}
+.chart{width:100%;height:320px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.note{background:#fdfaf3;border:1px solid #eee0c4;border-radius:8px;padding:13px 16px;
+ font-size:12.5px;color:#6b5a35;margin:14px 0}
+.risk{background:#fdf4f2;border:1px solid #f2d5cd;border-radius:8px;padding:13px 16px;
+ font-size:12.5px;color:#8c3d2c;margin:14px 0}
+ul{margin:8px 0;padding-left:20px} li{margin:5px 0}
+.src{font-size:11px;color:#98a2b3;margin-top:9px;text-align:right}
+.disc{background:#f0f2f6;border-radius:8px;padding:15px 18px;font-size:12px;color:#5b6779;margin-top:30px}
+.step{display:inline-block;width:19px;height:19px;line-height:19px;text-align:center;border-radius:50%;
+ background:#2b6cb0;color:#fff;font-size:11px;font-weight:700;margin-right:7px}
+@media(max-width:820px){.pickgrid,.grid2{grid-template-columns:1fr} .chart{height:270px}}
+</style></head><body><div class="wrap">
+
+<h1>量化反包法 2.0 · 选股结果</h1>
+<div class="meta">数据时点：<b>2026-08-11 10:20（盘中，A股连续竞价时段）</b>　|　断板基准日：2026-08-10　|　
+数据源：腾讯自选股（westock-data / westock-tool）、i问财涨停清单、NeoData 财经资讯</div>
+
+<div class="tldr">
+<h2>结论先行</h2>
+<p>按选股说明的五步流程：从 <b>8/7 收盘处于 2–3 连板的 9 只</b>票中筛出 <b>8/10 断板的 7 只</b>，
+再用「步骤3：断板日收盘贴 5 日均线」这条硬指标过滤，<b>只有 2 只通过</b>——<b>通宇通讯</b>与<b>武汉凡谷</b>，
+两只恰好同属 <b>6G 板块</b>（8/6 英伟达进军基站的消息驱动）。其余 5 只全部因收盘价脱离 MA5 达 9.5%–18.3% 出局。</p>
+<div class="pickgrid">
+  <div class="pick p1">
+    <span class="tag">首选 · 综合符合度最高</span>
+    <div class="nm">通宇通讯</div><div class="cd">002792 · 6G / 基站天线</div>
+    <div class="kv"><span>断板日(8/10)</span><b class="dn">-8.31%</b></div>
+    <div class="kv"><span>收盘离 MA5</span><b>+3.59% ✓</b></div>
+    <div class="kv"><span>板块地位</span><b>6G 绝对龙头</b></div>
+    <div class="kv"><span>断板日龙虎榜</span><b class="up">机构净买 2.14 亿</b></div>
+    <div class="kv"><span>此刻 (10:20)</span><b class="dn">33.58 / -1.52%</b></div>
+  </div>
+  <div class="pick p2">
+    <span class="tag">次选 · 形态最标准</span>
+    <div class="nm">武汉凡谷</div><div class="cd">002194 · 6G / 基站射频</div>
+    <div class="kv"><span>断板日(8/10)</span><b class="dn">-9.91%</b></div>
+    <div class="kv"><span>收盘离 MA5</span><b>+1.05% ✓✓</b></div>
+    <div class="kv"><span>板块地位</span><b>同板块跟风位</b></div>
+    <div class="kv"><span>断板日龙虎榜</span><b class="dn">炒股养家卖出</b></div>
+    <div class="kv"><span>此刻 (10:20)</span><b class="up">10.16 / +1.60%</b></div>
+  </div>
+</div>
+<p style="margin-bottom:0"><b>关键分歧：</b>说明里「步骤2 优先板块龙头 / 避雷① 不选后排杂毛」指向<b>通宇通讯</b>；
+而「步骤3+4 贴 MA5、次日开在 MA5 附近」与「心法：算清对手盘」指向<b>武汉凡谷</b>。
+两条线索这次是打架的，下文用龙虎榜和筹码数据做裁决。</p>
+</div>
+
+<h2>一、筛选漏斗</h2>
+<div class="card">
+<div class="funnel">
+  <div class="fstep"><div class="fbar" style="width:100%;background:#2b6cb0">全市场 8/10 涨停 101 只</div></div>
+  <div class="fstep"><div class="fbar" style="width:74%;background:#3d7fc1">8/7 连板梯队 75 只</div>
+    <div class="fdesc">腾讯自选股连续涨停天数排行</div></div>
+  <div class="fstep"><div class="fbar" style="width:46%;background:#5093d1">
+    <span class="step">1</span>其中 2板 / 3板 = 9 只</div>
+    <div class="fdesc">剔除 1 板（辨识度不足）与 4 板以上（高位、对手盘过重）</div></div>
+  <div class="fstep"><div class="fbar" style="width:34%;background:#d98514">8/10 断板 = 7 只</div>
+    <div class="fdesc">剔除 8/10 仍封板的 开开实业(3板)、高争民爆(3板)</div></div>
+  <div class="fstep"><div class="fbar" style="width:17%;background:#1e9e6a">
+    <span class="step">3</span>收盘贴 MA5（≤5%）= 2 只</div>
+    <div class="fdesc">武汉凡谷 +1.05%、通宇通讯 +3.59%</div></div>
+</div>
+<div class="src">来源：i问财 8/10 涨停清单（101 只）；腾讯自选股连板排行（2026-08-07 收盘口径）</div>
+</div>
+
+<h2>二、7 只断板股逐项对照</h2>
+<div class="card" style="padding:0;overflow-x:auto">
+<table>
+<thead><tr>
+<th>个股</th><th>8/7连板</th><th>8/10<br>涨跌</th><th>8/10<br>收盘</th><th>MA5</th>
+<th>离MA5<br>(步骤3)</th><th>下影线<br>(避雷②)</th><th>8/10<br>振幅</th><th>量比</th>
+<th>题材</th><th>梯队地位</th><th>此刻<br>10:20</th><th>判定</th>
+</tr></thead>
+<tbody><tr class="hl"><td><b>武汉凡谷</b><br><span class="sub">002194</span></td><td>2板</td><td class="dn">-9.91%</td><td>10.00</td><td>9.90</td><td class="dev g"><b>+1.05%</b></td><td>0.10%</td><td>7.03%</td><td>3.21</td><td>6G/基站射频</td><td>板块跟风</td><td class="up">10.16<br><span class="sub">+1.60%</span></td><td><span class="bd pass">通过</span></td></tr><tr class="hl"><td><b>通宇通讯</b><br><span class="sub">002792</span></td><td>2板</td><td class="dn">-8.31%</td><td>34.10</td><td>32.92</td><td class="dev g"><b>+3.59%</b></td><td>1.29%</td><td>7.99%</td><td>3.17</td><td>6G/基站天线</td><td>板块龙头</td><td class="dn">33.58<br><span class="sub">-1.52%</span></td><td><span class="bd pass">通过</span></td></tr><tr class=""><td><b>和远气体</b><br><span class="sub">002971</span></td><td>3板</td><td class="dn">-2.20%</td><td>44.38</td><td>40.52</td><td class="dev r"><b>+9.53%</b></td><td class="warn">4.69%</td><td>8.70%</td><td>2.60</td><td>电子特气</td><td>—</td><td class="dn">44.25<br><span class="sub">-0.29%</span></td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>景旺电子</b><br><span class="sub">603228</span></td><td>2板</td><td class="up">+1.11%</td><td>96.00</td><td>87.15</td><td class="dev r"><b>+10.16%</b></td><td class="warn">4.98%</td><td>9.24%</td><td>2.26</td><td>PCB/6G</td><td>跨界跟风</td><td class="dn">89.44<br><span class="sub">-6.83%</span></td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>锴威特</b><br><span class="sub">688693</span></td><td>2板</td><td class="dn">-8.76%</td><td>85.20</td><td>76.43</td><td class="dev r"><b>+11.47%</b></td><td class="warn">6.92%</td><td>18.74%</td><td>4.69</td><td>功率半导体</td><td>—</td><td class="up">88.94<br><span class="sub">+4.39%</span></td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>方正科技</b><br><span class="sub">600601</span></td><td>2板</td><td class="up">+2.72%</td><td>13.22</td><td>11.66</td><td class="dev r"><b>+13.40%</b></td><td>1.89%</td><td>4.51%</td><td>1.48</td><td>PCB</td><td>跟风</td><td class="dn">12.85<br><span class="sub">-2.80%</span></td><td><span class="bd fail">淘汰</span></td></tr><tr class=""><td><b>有研新材</b><br><span class="sub">600206</span></td><td>3板</td><td class="up">+8.01%</td><td>52.03</td><td>44.00</td><td class="dev r"><b>+18.26%</b></td><td>0.00%</td><td>6.21%</td><td>1.71</td><td>稀土/靶材</td><td>板块龙头</td><td class="up">53.59<br><span class="sub">+3.00%</span></td><td><span class="bd fail">淘汰</span></td></tr></tbody>
+</table>
+</div>
+<div class="note"><b>读表要点：</b>①「离 MA5」按说明步骤3，取 ≤5% 为「贴着均线」；
+②「下影线」=（min(开,收) − 最低）/ 收盘，对应避雷②「长下影线对应的廉价筹码，就是你明天的对手盘」——
+<b>锴威特 6.92% 下影 + 18.74% 振幅 + 4.69 量比</b>是最典型的巨量廉价筹码堆积，属明确避雷对象；
+③ <b>有研新材</b>虽是稀土/靶材龙头、今日 +3.00% 最强，但 8/10 收盘离 MA5 达 <b>+18.26%</b>，
+属说明里明确排除的「过度脱离均线」，不在本策略射程内。</div>
+<div class="src">来源：腾讯自选股（K线与均线截至 2026-08-10 收盘；「此刻」为 2026-08-11 10:20 盘中快照）</div>
+
+<div class="card"><div id="devc" class="chart" style="height:300px"></div></div>
+
+<h2>三、入围两只：龙头地位与对手盘裁决</h2>
+
+<h3>题材溯源：6G 板块（8/6 启动）</h3>
+<div class="card">
+<p>据界面新闻（2026-08-06）：<b>英伟达正加速进入电信运营商市场，并在中国寻找基站厂商合作方，开发符合海外市场要求的 6G 基站</b>。
+当日 6G 行业指数一度逆市拉升超 3%，涨停先后顺序为：</p>
+<ul>
+<li><b>通宇通讯</b> —— 开盘后 <b>2 分钟直线拉升封死涨停，封单 13 万手</b>，先手最强；
+且报道点名的<b>深圳佳贤通信正是通宇通讯近期收购的公司</b> → <b>辨识度最高，板块绝对龙头</b></li>
+<li>广哈通信 20% 涨停；<b>武汉凡谷</b>、沃格光电、景旺电子随后封板 → 跟风位</li>
+</ul>
+<p>8/7 两者同步二板；<b>8/10 整个 6G 梯队集体断板</b>：通宇通讯 -8.31%、武汉凡谷 -9.91%（近跌停）、
+景旺电子 +1.11%、沃格光电（4板）亦断板。</p>
+<div class="src">资讯来源：《6G概念大涨，英伟达进入电信运营商市场？究竟有何利好？》2026-08-06（媒体转载，非一手来源，需核实原文）</div>
+</div>
+
+<h3>裁决依据一：断板日龙虎榜（决定性）</h3>
+<div class="card">
+<table>
+<thead><tr><th>个股</th><th>8/10 龙虎榜</th><th>席位性质</th><th>金额</th><th>解读</th></tr></thead>
+<tbody>
+<tr class="hl"><td><b>通宇通讯</b></td><td>机构榜 <b>第 2 名</b></td><td>4 个机构买入席位</td>
+<td>买入 3.84 亿 / <b class="up">净买入 2.14 亿</b>（净占比 27.16%）</td>
+<td class="up">断板日大跌 -8.31% 却有机构大额承接 → 强正向</td></tr>
+<tr><td><b>武汉凡谷</b></td><td>游资榜</td><td>知名游资「炒股养家」</td>
+<td class="dn">出现在卖出方</td><td class="dn">短线主力在断板日离场 → 负向</td></tr>
+</tbody>
+</table>
+<div class="src">来源：腾讯自选股龙虎榜（2026-08-10）。注：机构专用席位需区分真机构与量化席位；龙虎榜只反映当日波动，不代表趋势。</div>
+</div>
+
+<h3>裁决依据二：筹码获利盘（对应心法「算清对手盘」）</h3>
+<div class="grid2">
+<div class="card"><div id="profc" class="chart" style="height:280px"></div></div>
+<div class="card">
+<h3 style="margin-top:0">筹码结构对比</h3>
+<div class="kv"><span>武汉凡谷 获利比例</span><b class="dn">49.25%（对手盘更轻）</b></div>
+<div class="kv"><span>武汉凡谷 平均成本</span><b>10.19 元 ≈ 现价 10.16</b></div>
+<div class="kv"><span>通宇通讯 获利比例</span><b class="up">57.89%（对手盘更重）</b></div>
+<div class="kv"><span>通宇通讯 平均成本</span><b>32.90 元 ≈ MA5 32.92</b></div>
+<p style="font-size:12.5px;margin-top:12px;color:#5b6779">
+武汉凡谷现价几乎贴在平均成本线上，浮盈筹码更少，按说明「对手盘越多越难反包」这一条<b>武汉凡谷占优</b>。
+通宇通讯获利盘近 6 成、抛压相对更重，但它的平均成本 32.90 与 MA5 32.92 几乎重合——
+意味着 <b>MA5 同时是筹码成本密集区</b>，该位置的支撑有效性反而更高。</p>
+<div class="src">来源：腾讯自选股筹码成本（2026-08-11）</div>
+</div>
+</div>
+
+<h2>四、今日分时：步骤 4 买点验证</h2>
+<div class="grid2">
+<div class="card"><div id="m1" class="chart"></div></div>
+<div class="card"><div id="m2" class="chart"></div></div>
+</div>
+<div class="card">
+<table>
+<thead><tr><th>个股</th><th>开盘价</th><th>开盘 vs MA5</th><th>盘中最低</th><th>是否破 MA5</th><th>此刻位置</th><th>对应说明步骤4</th></tr></thead>
+<tbody>
+<tr><td><b>通宇通讯</b></td><td>33.80</td><td>MA5 上方 +2.68%</td><td>32.32（09:40）</td>
+<td class="dn">曾跌破（约 09:31–09:52，20 分钟）</td><td>33.58，站回 MA5 上方 +2.0%</td>
+<td>属「盘中破 MA5 后拉回」——尚未构成「长时间在 MA5 下方拉不起来」，但必须盯住 MA5 得失</td></tr>
+<tr class="hl"><td><b>武汉凡谷</b></td><td>10.01</td><td>MA5 上方 +1.15%</td><td>10.01（即开盘价）</td>
+<td class="up">全程未破</td><td>10.16，MA5 上方 +2.6%</td>
+<td class="up">教科书式「开在五日均线附近 → 沿 MA5 低吸」，全天最低点即开盘点</td></tr>
+</tbody>
+</table>
+<div class="src">来源：腾讯自选股分时（2026-08-11 09:30–10:20，53 个数据点）；MA5 为 2026-08-10 收盘口径</div>
+</div>
+
+<h3>日K与均线位置</h3>
+<div class="grid2">
+<div class="card"><div id="k1" class="chart" style="height:300px"></div></div>
+<div class="card"><div id="k2" class="chart" style="height:300px"></div></div>
+</div>
+
+<h2>五、买点与防守位（按说明步骤 4）</h2>
+<div class="card">
+<table>
+<thead><tr><th>个股</th><th>低吸参考区（MA5）</th><th>第一防守位（MA10）</th><th>说明原文对应</th></tr></thead>
+<tbody>
+<tr><td><b>通宇通讯</b><br><span class="sub">002792</span></td>
+<td>8/10 MA5 = <b>32.92</b>；含今日的实时 MA5 ≈ <b>33.89</b><br><span class="sub">回踩 33.0–33.9 属策略低吸带</span></td>
+<td>MA10 = <b>28.59</b>（实时约 29.46）<br><span class="sub">距现价约 -12%~-15%</span></td>
+<td>「次日开在五日均线附近就可沿五日均线低吸」；「若长时间在 MA5 下方拉不起来，可能下探 MA10」</td></tr>
+<tr class="hl"><td><b>武汉凡谷</b><br><span class="sub">002194</span></td>
+<td>8/10 MA5 = <b>9.90</b>；含今日的实时 MA5 ≈ <b>10.10</b><br><span class="sub">开盘 10.01 已落在该带内</span></td>
+<td>MA10 = <b>9.32</b>（实时约 9.48）<br><span class="sub">距现价约 -7%</span></td>
+<td>同上；本票开盘即踩 MA5，属说明所称的「标准动作」情形</td></tr>
+</tbody>
+</table>
+<div class="note"><b>步骤 5（集合竞价红柱）未能完整执行，这里不编数据：</b>
+竞价阶段（9:15–9:25）逐笔委托的「主动加价已匹配买量 vs 卖量」明细，当前可达数据源未覆盖，
+<b>无法验证红柱形态</b>。只能用开盘首笔成交做代理观察：
+通宇通讯 09:30 首笔 15,098 手 / 5,103 万元（低开 -0.88%，但仍在 MA5 上方 2.68%）；
+武汉凡谷 09:30 首笔 22,161 手 / 2,218 万元（平开 +0.10%，在 MA5 上方 1.15%）。
+若要严格执行步骤5，请在行情软件竞价页自行确认红柱。</div>
+</div>
+
+<h2>六、必须知道的三个风险</h2>
+<div class="risk">
+<p style="margin-top:0"><b>① 今日大盘情绪偏低，两只都是在逆板块环境做反包。</b>
+截至 10:16，沪深两市上涨 1,789 家（占 32%）、下跌 3,483 家，<b>涨停仅 36 家、跌停 0 家</b>，
+成交额较昨日<b>缩量 2,690 亿</b>。今日强势方向是<b>医药商业 +3.23%、生物制品 +2.08%、化学制药 +1.47%</b>，
+而 <b>6G 板块 -1.02%、CPO -0.65%</b> 双双走弱——两只候选所属题材今天并不在风口上。</p>
+<p><b>② 6G 梯队整体退潮。</b>今日沃格光电 -0.36%、广哈通信 -2.52%、景旺电子 -6.83%，
+<b>武汉凡谷是 6G 梯队今日唯一红盘</b>。梯队断层本身就是退潮信号，反包成功率会明显低于板块健康时。</p>
+<p style="margin-bottom:0"><b>③ 说明自身的两条线索这次互相矛盾。</b>
+龙头（通宇通讯）对手盘更重、盘中还破过 MA5；形态最标准的（武汉凡谷）却是跟风位、且被知名游资卖出。
+说明第 6 条也提醒「量化玩法知道的人越多越不赚钱」——该策略未经回测验证，本次属高波动、高回撤的短线博弈。</p>
+</div>
+
+<div class="disc">
+<b>免责声明</b>：以上内容基于公开数据和量化分析，仅供参考，不构成投资建议。市场有风险，投资需谨慎。
+任何投资决策应结合个人风险承受能力、资金状况和投资目标独立判断，必要时咨询持牌专业机构。过往表现不预示未来收益。
+</div>
+
+</div>
+<script>
+
+const D1={"minute": [["0930", 33.8], ["0931", 32.57], ["0932", 32.94], ["0933", 32.71], ["0934", 32.64], ["0935", 32.48], ["0936", 32.4], ["0937", 32.64], ["0938", 32.55], ["0939", 32.37], ["0940", 32.34], ["0941", 32.55], ["0942", 32.55], ["0943", 32.61], ["0944", 32.74], ["0945", 32.68], ["0946", 32.63], ["0947", 32.66], ["0948", 32.76], ["0949", 32.58], ["0950", 32.63], ["0951", 32.84], ["0952", 33.06], ["0953", 33.24], ["0954", 33.48], ["0955", 33.44], ["0956", 33.34], ["0957", 33.35], ["0958", 33.18], ["0959", 33.15], ["1000", 33.15], ["1001", 33.09], ["1002", 32.98], ["1003", 33.01], ["1004", 33.1], ["1005", 33.14], ["1006", 33.18], ["1007", 33.16], ["1008", 33.13], ["1009", 33.09], ["1010", 33.19], ["1011", 33.17], ["1012", 33.28], ["1013", 33.32], ["1014", 33.6], ["1015", 33.64], ["1016", 33.59], ["1017", 33.54], ["1018", 33.5], ["1019", 33.46], ["1020", 33.58], ["1021", 33.61], ["1022", 33.59]], "kdates": ["07-08", "07-09", "07-10", "07-13", "07-14", "07-15", "07-16", "07-17", "07-20", "07-21", "07-22", "07-23", "07-24", "07-27", "07-28", "07-29", "07-30", "07-31", "08-03", "08-04", "08-05", "08-06", "08-07", "08-10", "08-11"], "ohlc": [[31.94, 31.38, 31.34, 32.77], [31.7, 32.77, 30.55, 32.85], [32.78, 34.4, 32.65, 36.05], [34.04, 30.96, 30.96, 34.04], [29.0, 29.01, 27.86, 29.5], [28.24, 28.63, 28.01, 29.72], [28.06, 27.95, 27.77, 29.13], [27.95, 25.8, 25.21, 28.05], [25.98, 23.82, 23.22, 26.3], [23.9, 25.01, 21.44, 25.14], [24.84, 25.01, 24.66, 25.65], [24.61, 25.4, 24.61, 25.85], [24.9, 24.47, 24.3, 25.39], [24.47, 25.41, 24.22, 25.46], [25.42, 24.85, 24.57, 25.9], [24.54, 23.97, 23.48, 24.84], [23.72, 22.55, 22.41, 24.15], [23.45, 23.76, 23.3, 24.25], [23.65, 26.14, 23.56, 26.14], [27.0, 28.75, 26.88, 28.75], [30.68, 30.74, 29.81, 31.63], [32.68, 33.81, 31.48, 33.81], [37.19, 37.19, 37.19, 37.19], [36.54, 34.1, 33.66, 36.63], [33.8, 33.55, 32.32, 33.95]], "vol": [176220.0, 212236.0, 399309.0, 196439.0, 341883.0, 274419.0, 171178.0, 233037.0, 239150.0, 285040.0, 205340.0, 163631.0, 119161.0, 140548.0, 123350.0, 158419.0, 155274.0, 175208.0, 205203.0, 183038.0, 740281.0, 234535.0, 82807.0, 917658.0, 304729.0], "ma5": [null, null, null, null, 31.7, 31.15, 30.19, 28.47, 27.04, 26.24, 25.52, 25.01, 24.74, 25.06, 25.03, 24.82, 24.25, 24.11, 24.25, 25.03, 26.39, 28.64, 31.33, 32.92, 33.88], "ma10": [null, null, null, null, null, null, null, null, null, 28.97, 28.34, 27.6, 26.61, 26.05, 25.64, 25.17, 24.63, 24.43, 24.66, 25.03, 25.6, 26.45, 27.72, 28.59, 29.46]};
+const D2={"minute": [["0930", 10.01], ["0931", 10.09], ["0932", 10.33], ["0933", 10.27], ["0934", 10.13], ["0935", 10.16], ["0936", 10.14], ["0937", 10.25], ["0938", 10.3], ["0939", 10.22], ["0940", 10.2], ["0941", 10.28], ["0942", 10.29], ["0943", 10.29], ["0944", 10.27], ["0945", 10.26], ["0946", 10.24], ["0947", 10.28], ["0948", 10.26], ["0949", 10.25], ["0950", 10.25], ["0951", 10.22], ["0952", 10.15], ["0953", 10.16], ["0954", 10.17], ["0955", 10.2], ["0956", 10.22], ["0957", 10.21], ["0958", 10.2], ["0959", 10.17], ["1000", 10.16], ["1001", 10.13], ["1002", 10.12], ["1003", 10.11], ["1004", 10.1], ["1005", 10.1], ["1006", 10.1], ["1007", 10.13], ["1008", 10.11], ["1009", 10.12], ["1010", 10.17], ["1011", 10.21], ["1012", 10.21], ["1013", 10.19], ["1014", 10.18], ["1015", 10.17], ["1016", 10.16], ["1017", 10.18], ["1018", 10.17], ["1019", 10.16], ["1020", 10.15], ["1021", 10.15], ["1022", 10.16]], "kdates": ["07-08", "07-09", "07-10", "07-13", "07-14", "07-15", "07-16", "07-17", "07-20", "07-21", "07-22", "07-23", "07-24", "07-27", "07-28", "07-29", "07-30", "07-31", "08-03", "08-04", "08-05", "08-06", "08-07", "08-10", "08-11"], "ohlc": [[8.68, 8.69, 8.55, 8.78], [8.69, 8.74, 8.28, 8.74], [8.76, 8.96, 8.68, 9.24], [8.86, 8.31, 8.28, 8.98], [8.28, 8.39, 8.05, 8.4], [8.39, 8.41, 8.34, 8.57], [8.33, 8.48, 8.25, 8.6], [8.42, 8.16, 8.12, 8.47], [8.26, 8.07, 8.0, 8.35], [8.08, 8.25, 7.8, 8.27], [8.17, 8.06, 8.04, 8.24], [8.02, 8.28, 8.02, 8.3], [8.2, 8.11, 8.03, 8.26], [8.08, 8.32, 8.05, 8.34], [8.23, 8.6, 8.22, 8.74], [8.6, 8.8, 8.46, 8.85], [8.68, 8.67, 8.55, 8.85], [8.75, 8.77, 8.75, 8.9], [8.7, 8.93, 8.69, 8.94], [8.99, 9.12, 8.95, 9.2], [9.05, 9.17, 8.99, 9.24], [9.32, 10.09, 9.29, 10.09], [10.49, 11.1, 10.46, 11.1], [10.55, 10.0, 9.99, 10.77], [10.01, 10.15, 10.01, 10.38]], "vol": [139199.0, 202066.0, 253164.0, 194271.0, 149863.0, 133356.0, 131358.0, 151325.0, 147133.0, 170003.0, 117727.0, 129567.0, 101464.0, 110612.0, 224697.0, 208078.0, 152696.0, 141474.0, 117432.0, 156509.0, 160370.0, 405276.0, 615480.0, 935124.0, 427566.0], "ma5": [null, null, null, null, 8.62, 8.56, 8.51, 8.35, 8.3, 8.27, 8.2, 8.16, 8.15, 8.2, 8.27, 8.42, 8.5, 8.63, 8.75, 8.86, 8.93, 9.22, 9.68, 9.9, 10.1], "ma10": [null, null, null, null, null, null, null, null, null, 8.45, 8.38, 8.34, 8.25, 8.25, 8.27, 8.31, 8.33, 8.39, 8.48, 8.57, 8.68, 8.86, 9.16, 9.32, 9.48]};
+const RED='#c0392b', GRN='#1e9e6a', BLU='#2b6cb0', ORG='#d98514';
+
+function minuteChart(id, D, base, ma5, name){
+  var times = D.minute.map(function(p){ return p[0].slice(0,2)+':'+p[0].slice(2); });
+  var prices = D.minute.map(function(p){ return p[1]; });
+  echarts.init(document.getElementById(id)).setOption({
+    title:{ text:name+' 今日分时 vs 5日均线', left:'center', textStyle:{fontSize:13,fontWeight:600,color:'#1a2233'} },
+    tooltip:{ trigger:'axis' },
+    grid:{ left:52, right:20, top:42, bottom:34 },
+    xAxis:{ type:'category', data:times, axisLabel:{fontSize:10,color:'#7a8699'} },
+    yAxis:{ type:'value', scale:true, axisLabel:{fontSize:10,color:'#7a8699'}, splitLine:{lineStyle:{color:'#eef1f6'}} },
+    series:[
+      { name:'价格', type:'line', data:prices, showSymbol:false,
+        itemStyle:{color:BLU}, lineStyle:{color:BLU,width:2},
+        areaStyle:{color:'rgba(43,108,176,0.08)'},
+        markLine:{ symbol:'none', silent:true, data:[
+          { yAxis:base, lineStyle:{color:'#94a3b8',type:'dashed'},
+            label:{formatter:'昨收 '+base,fontSize:10,color:'#64748b',position:'insideEndTop'} },
+          { yAxis:ma5, lineStyle:{color:ORG,type:'solid',width:1.6},
+            label:{formatter:'MA5 '+ma5,fontSize:10,color:ORG,position:'insideEndBottom'} }
+        ]} }
+    ]
+  });
+}
+
+function klineChart(id, D, name){
+  echarts.init(document.getElementById(id)).setOption({
+    title:{ text:name+' 日K与均线（近25日）', left:'center', textStyle:{fontSize:13,fontWeight:600,color:'#1a2233'} },
+    tooltip:{ trigger:'axis', axisPointer:{type:'cross'} },
+    legend:{ data:['日K','MA5','MA10'], top:22, textStyle:{fontSize:11} },
+    grid:{ left:52, right:20, top:56, bottom:34 },
+    xAxis:{ type:'category', data:D.kdates, axisLabel:{fontSize:9,color:'#7a8699'} },
+    yAxis:{ scale:true, axisLabel:{fontSize:10,color:'#7a8699'}, splitLine:{lineStyle:{color:'#eef1f6'}} },
+    series:[
+      { name:'日K', type:'candlestick', data:D.ohlc,
+        itemStyle:{ color:RED, color0:GRN, borderColor:RED, borderColor0:GRN } },
+      { name:'MA5', type:'line', data:D.ma5, showSymbol:false, lineStyle:{color:ORG,width:1.6}, itemStyle:{color:ORG} },
+      { name:'MA10', type:'line', data:D.ma10, showSymbol:false, lineStyle:{color:'#8b5cf6',width:1.4}, itemStyle:{color:'#8b5cf6'} }
+    ]
+  });
+}
+
+function devChart(){
+  var names=['武汉凡谷','通宇通讯','和远气体','景旺电子','锴威特','方正科技','有研新材'];
+  var vals=[1.05,3.59,9.53,10.16,11.47,13.40,18.26];
+  echarts.init(document.getElementById('devc')).setOption({
+    title:{ text:'断板日收盘价偏离5日均线幅度（步骤3筛选）', left:'center', textStyle:{fontSize:13,fontWeight:600,color:'#1a2233'} },
+    tooltip:{ trigger:'axis', formatter:'{b}: {c}%' },
+    grid:{ left:74, right:52, top:46, bottom:30 },
+    xAxis:{ type:'value', axisLabel:{formatter:'{value}%',fontSize:10,color:'#7a8699'}, splitLine:{lineStyle:{color:'#eef1f6'}} },
+    yAxis:{ type:'category', data:names.slice().reverse(), axisLabel:{fontSize:11,color:'#334155'} },
+    series:[{ type:'bar', barWidth:16,
+      data: vals.slice().reverse().map(function(v){ return { value:v, itemStyle:{ color: v<=5 ? GRN : '#cbd5e1' } }; }),
+      label:{ show:true, position:'right', formatter:'{c}%', fontSize:10, color:'#475569' },
+      markLine:{ symbol:'none', silent:true, data:[{ xAxis:5, lineStyle:{color:RED,type:'dashed'},
+        label:{formatter:'5%阈值',fontSize:10,color:RED} }] } }]
+  });
+}
+
+function profChart(){
+  echarts.init(document.getElementById('profc')).setOption({
+    title:{ text:'筹码获利比例（对手盘测算）', left:'center', textStyle:{fontSize:13,fontWeight:600,color:'#1a2233'} },
+    tooltip:{ trigger:'axis', formatter:'{b}<br/>获利盘: {c}%' },
+    grid:{ left:60, right:36, top:52, bottom:34 },
+    xAxis:{ type:'category', data:['武汉凡谷','通宇通讯'], axisLabel:{fontSize:11,color:'#334155'} },
+    yAxis:{ type:'value', max:100, axisLabel:{formatter:'{value}%',fontSize:10,color:'#7a8699'}, splitLine:{lineStyle:{color:'#eef1f6'}} },
+    series:[{ type:'bar', barWidth:56,
+      data:[ {value:49.25, itemStyle:{color:GRN}}, {value:57.89, itemStyle:{color:RED}} ],
+      label:{ show:true, position:'top', formatter:'{c}%', fontSize:12, fontWeight:600, color:'#334155' } }]
+  });
+}
+
+minuteChart('m1', D1, 34.10, 32.92, '通宇通讯');
+minuteChart('m2', D2, 10.00, 9.90, '武汉凡谷');
+klineChart('k1', D1, '通宇通讯');
+klineChart('k2', D2, '武汉凡谷');
+devChart();
+profChart();
+
+</script></body></html>
